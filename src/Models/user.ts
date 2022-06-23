@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import type { User } from "../Types/user";
-import { PrismaError } from "../Utils/errors";
 import bcrypt from 'bcrypt';
+import { RequestError } from "request-error";
 
 const prisma = new PrismaClient();
 
@@ -16,7 +16,13 @@ class Model {
             return query;
 
         } catch(err : any) {
-            throw new PrismaError(err, 422);
+            let error = err;
+            switch (err.meta.target) {
+                case 'user_email_key':
+                    error = 'Este usuário já existe';
+                break;
+            }
+            throw RequestError(error, 422);
         }
         
     }
@@ -28,7 +34,7 @@ class Model {
             return query;
 
         } catch(err : any) {
-            throw new PrismaError(err, 422);
+            throw RequestError(err, 422);
         }
 
     }
