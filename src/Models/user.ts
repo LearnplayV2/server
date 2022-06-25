@@ -19,7 +19,7 @@ class Model {
             let error = err;
             switch (err.meta.target) {
                 case 'user_email_key':
-                    error = 'Este usuário já existe';
+                    error = 'Este e-mail já foi cadastrado';
                 break;
             }
             throw RequestError(error, 422);

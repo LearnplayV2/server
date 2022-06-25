@@ -20,7 +20,9 @@ class Controller {
 
             const query = await Model.create(user);
 
-            res.status(201).json(query);
+            const token = jwt.sign(query, JWTSECRET!);
+
+            res.status(201).json({token});
 
         } catch(err : any) {
             res.status(err?.status ?? 500).json(err);
