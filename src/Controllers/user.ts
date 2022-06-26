@@ -40,7 +40,8 @@ class Controller {
             CheckLogin({email, password} as User);
 
             let query = await Model.login(email);
-            
+
+            if(query?.status == 'INACTIVE') throw RequestError('Este usuário foi desativado', 401);
             if(query == null) throw RequestError('Usuário não encontrado.', 404);
             if(!bcrypt.compareSync(password, query.password)) throw RequestError('Não foi possível fazer login');
 
@@ -65,7 +66,7 @@ class Controller {
 
             const {userLoggedIn} = req;
 
-            return res.json({msg: 'Usuário autenticado com sucesso!', user: userLoggedIn});
+            return res.json(userLoggedIn);
             
         } catch(err : any) {
             res.status(err?.status ?? 500).json(err);
