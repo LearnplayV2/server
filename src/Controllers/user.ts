@@ -38,7 +38,7 @@ class Controller {
 
             const query = await Model.login(email);
             
-            if(query == null) throw RequestError('Esse usuário não existe.', 404);
+            if(query == null) throw RequestError('Usuário não encontrado.', 404);
             if(!bcrypt.compareSync(password, query.password)) throw RequestError('Não foi possível fazer login');
 
             const token = jwt.sign(query, JWTSECRET!);
