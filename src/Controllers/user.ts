@@ -5,6 +5,8 @@ import Model from '../Models/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { RequestError } from "request-error";
+import multer from "multer";
+import { multerConfig } from "../multer/multerConfig";
 
 const JWTSECRET = process.env.JWTSECRET;
 
@@ -72,6 +74,17 @@ class Controller {
             res.status(err?.status ?? 500).json(err);
         }
     }    
+
+    public async setProfilePicture(req: RequestUser, res: Response) {
+        const fileName = req.userLoggedIn.uuid;
+        const upload = multer(multerConfig('user', fileName)).single('file');
+
+        upload(req, res, (err) => {
+            if(err) return res.status(500).json(err);
+        });
+
+        return res.status(200).json({filename: `${fileName}.png`});
+    }
 
 }
 

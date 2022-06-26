@@ -43,9 +43,11 @@
   },
   "dependencies": {
     "@prisma/client": "^3.15.2",
+    "@types/multer": "^1.4.7",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "cron": "^1.8.2",
+    "crypto": "^1.0.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
