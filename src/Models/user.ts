@@ -39,6 +39,18 @@ class Model {
 
     }
 
+    public async findUserById(uuid: string) {
+        try {
+
+            const query = await prisma.user.findFirst({where: {uuid}});
+
+            return query;
+
+        } catch(err : any) {
+            throw RequestError('Usuário não encontrado', 404);
+        }
+    }
+
 }
 
 export default new Model();
