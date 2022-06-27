@@ -6,9 +6,9 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { RequestError } from "request-error";
 import multer from "multer";
-import { multerConfig } from "../multer/multerConfig";
 import fs from 'fs';
 import path from "path";
+import Service from '../Services/user';
 
 const JWTSECRET = process.env.JWTSECRET;
 
@@ -79,7 +79,7 @@ class Controller {
 
     public async setProfilePicture(req: RequestUser, res: Response) {
         const fileName = req.userLoggedIn.uuid;
-        const upload = multer(multerConfig('user', fileName)).single('file');
+        const upload = multer(Service.multerConfig('user', fileName)).single('file');
 
         upload(req, res, (err) => {
             if (!err) return res.status(200).json({ filename: `${fileName}.png` });
@@ -92,19 +92,10 @@ class Controller {
 
         const {uuid} = req.params;
         
-        const publicPath = '../../public';
-        const filePath = path.join(__dirname, `${publicPath}/uploads/user/${uuid}.png`);
-        const defaultPath = path.join(__dirname, `${publicPath}/default-avatar.jpg`);
-
-        res.writeHead(200, { 'Content-Type': 'image/png' });
-
-        if(fs.existsSync(filePath)) {
-            const file = fs.readFileSync(filePath);
-            return res.end(file);
-        }
-
-        const defaultFile = fs.readFileSync(defaultPath);
-        return res.end(defaultFile);
+        const photo = await Service.getProfilePicture(uuid);
+        
+        res.writeHead(200, { 'Content-Type': 'image/png' }); 
+        return res.end(photo);
         
     }
 
