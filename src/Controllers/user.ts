@@ -7,6 +7,8 @@ import jwt from 'jsonwebtoken';
 import { RequestError } from "request-error";
 import multer from "multer";
 import { multerConfig } from "../multer/multerConfig";
+import fs from 'fs';
+import path from "path";
 
 const JWTSECRET = process.env.JWTSECRET;
 
@@ -83,6 +85,18 @@ class Controller {
             if (!err) return res.status(200).json({ filename: `${fileName}.png` });
 
             return res.status(500).json(err);
+        });
+    }
+
+    public async getProfilePicture(req: RequestUser, res: Response) {
+
+        const {uuid} = req.params;
+        
+        const filePath = path.join(__dirname, `../../public/uploads/user/${uuid}.png`);
+        fs.readFile(filePath, function(err, data) {
+            if(err) throw err;
+            res.writeHead(200, {'Content-Type': 'image/png'});
+            res.end(data);
         });
     }
 
