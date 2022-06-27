@@ -1,11 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import IndexController from './Controllers/index';
-import UserRoutes from './Routes/user';
+import IndexController from './src/Controllers/index';
+import UserRoutes from './src/Routes/user';
 
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
+app.use('/api/public/', express.static(__dirname + '/public'));
 app.use(express.json());
 app.use(cors({
     origin:  process.env.CLIENT_URL ? JSON.parse(process.env.CLIENT_URL) : '',
