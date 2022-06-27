@@ -82,7 +82,7 @@ class Controller {
         const upload = multer(Service.multerConfig('user', fileName)).single('file');
 
         upload(req, res, (err) => {
-            if (!err) return res.status(200).json({ filename: `${fileName}.png` });
+            if (!err) return res.status(200).json({ message: 'A foto de perfil foi alterada!', filename: `${fileName}.png` });
 
             return res.status(500).json(err);
         });
