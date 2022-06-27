@@ -92,12 +92,20 @@ class Controller {
 
         const {uuid} = req.params;
         
-        const filePath = path.join(__dirname, `../../public/uploads/user/${uuid}.png`);
-        fs.readFile(filePath, function(err, data) {
-            if(err) throw err;
-            res.writeHead(200, {'Content-Type': 'image/png'});
-            res.end(data);
-        });
+        const publicPath = '../../public';
+        const filePath = path.join(__dirname, `${publicPath}/uploads/user/${uuid}.png`);
+        const defaultPath = path.join(__dirname, `${publicPath}/default-avatar.jpg`);
+
+        res.writeHead(200, { 'Content-Type': 'image/png' });
+
+        if(fs.existsSync(filePath)) {
+            const file = fs.readFileSync(filePath);
+            return res.end(file);
+        }
+
+        const defaultFile = fs.readFileSync(defaultPath);
+        return res.end(defaultFile);
+        
     }
 
 }
