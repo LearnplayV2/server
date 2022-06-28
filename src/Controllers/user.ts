@@ -6,8 +6,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { RequestError } from "request-error";
 import multer from "multer";
-import fs from 'fs';
-import path from "path";
 import Service from '../Services/user';
 
 const JWTSECRET = process.env.JWTSECRET;
@@ -43,11 +41,11 @@ class Controller {
         try {
             CheckLogin({ email, password } as User);
 
-            let query = await Model.login(email);
+            let query = await Model.login(email!);
 
             if (query?.status == 'INACTIVE') throw RequestError('Este usuário foi desativado', 401);
             if (query == null) throw RequestError('Usuário não encontrado.', 404);
-            if (!bcrypt.compareSync(password, query.password)) throw RequestError('Não foi possível fazer login');
+            if (!bcrypt.compareSync(password!, query.password)) throw RequestError('Não foi possível fazer login');
 
             const token = jwt.sign(query, JWTSECRET!);
 
@@ -90,13 +88,26 @@ class Controller {
 
     public async getProfilePicture(req: RequestUser, res: Response) {
 
-        const {uuid} = req.params;
-        
+        const { uuid } = req.params;
+
         const photo = await Service.getProfilePicture(uuid);
-        
-        res.writeHead(200, { 'Content-Type': 'image/png' }); 
+
+        res.writeHead(200, { 'Content-Type': 'image/png' });
         return res.end(photo);
-        
+
+    }
+
+    public async getProfile(req: RequestUser, res: Response) {
+
+        const { uuid } = req.params;
+
+        const query = await Model.findUserById(uuid);
+
+        delete query?.password;
+        delete query?.email;
+
+        return res.json(query);
+
     }
 
 }
