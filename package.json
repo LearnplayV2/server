@@ -28,6 +28,7 @@
     "@types/express": "^4.17.9",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^18.0.0",
+    "@types/socket.io": "^3.0.2",
     "@types/uuid": "^8.3.4",
     "@types/validator": "^13.7.3",
     "@typescript-eslint/parser": "^4.33.0",
@@ -57,6 +58,7 @@
     "mysql2": "^2.3.3",
     "prisma": "^3.15.2",
     "request-error": "^2.0.1",
+    "socket.io": "^4.5.1",
     "validator": "^13.7.0"
   }
 }

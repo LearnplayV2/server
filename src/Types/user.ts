@@ -6,6 +6,7 @@ export interface User {
     email?: string;
     password?: string;
     status?: UserStatusEnum;
+    socketId?: string;
 }
 
 enum UserStatusEnum {

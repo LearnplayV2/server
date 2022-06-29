@@ -38,6 +38,7 @@ class Controller {
     public async login(req: Request, res: Response) {
         const { email, password } = req.body as User;
 
+        
         try {
             CheckLogin({ email, password } as User);
 
@@ -66,7 +67,7 @@ class Controller {
         try {
             const query = await Model.findUserById(req.userLoggedIn.uuid!);
 
-            const { userLoggedIn } = req;
+            const { userLoggedIn } = req as RequestUser;
 
             return res.json(userLoggedIn);
 
