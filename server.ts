@@ -4,7 +4,7 @@ import IndexController from './src/Controllers/index';
 import UserRoutes from './src/Routes/user';
 import { Server } from 'socket.io';
 import type { SocketRequest } from './src/Types/socket';
-import SocketService from './src/Services/socket';
+import SocketController from './src/Controllers/socket';
 
 const app = express();
 
@@ -17,7 +17,7 @@ const io = new Server(process.env.SOCKET_PORT, {
     cors: corsConfig
 });
 
-SocketService(io);
+SocketController(io);
 
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/public/', express.static(__dirname + '/public'));
