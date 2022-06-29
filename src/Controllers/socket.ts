@@ -9,7 +9,8 @@ class Controller {
     constructor(io : Server) {
         io.on('connection', (socket) => {
             socket.on('newUser', (email) => {
-                SocketService.addNewUser(email, socket.id);                
+                SocketService.addNewUser(email, socket.id);          
+                console.log(SocketService.getUsers());      
             })
             console.log('alguém se conectou');
         });
