@@ -103,11 +103,26 @@ class Controller {
 
         const query = await Model.findUserById(uuid);
 
+        //@ts-ignore
         delete query?.password;
+        //@ts-ignore
         delete query?.email;
 
         return res.json(query);
 
+    }
+
+    public async getMembers(req: Request, res: Response) {
+
+        try {   
+            const query = await Model.getMembers();
+
+            return res.json(query);
+
+        } catch(err : any) {
+            return res.status(err?.status ?? 500).json(err);
+        }
+        
     }
 
 }

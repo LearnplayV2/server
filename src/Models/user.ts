@@ -51,6 +51,30 @@ class Model {
         }
     }
 
+    public async getMembers() {
+        try {
+            const query = await prisma.user.findMany({
+                skip: 0,
+                take: 5,
+                where: {
+                    status: 'ACTIVE'
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                select: {
+                    uuid: true,
+                    name: true,
+                    createdAt: true
+                }
+            });
+
+            return query;
+        } catch(err : any) {
+            throw RequestError(err, 422);
+        }
+    }
+
 }
 
 export default new Model();
