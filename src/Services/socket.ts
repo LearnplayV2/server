@@ -9,6 +9,14 @@ class Service {
         this.onlineUsers.push({ email, socketId });
     }
 
+    public removeUser = (socketId : string) => {
+        this.onlineUsers = this.onlineUsers.filter((user : User) => user.socketId !== socketId);
+    }
+
+    public getUser = (email : string) => {
+        return this.onlineUsers.find((user : User) => user.email === email);
+    }
+
     public getUsers = () => {
         return this.onlineUsers;
     }

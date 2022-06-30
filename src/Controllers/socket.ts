@@ -1,18 +1,23 @@
 import type { Server } from "socket.io";
 import type {User} from '../Types/user';
-import SocketService from '../Services/socket';
+import Service from '../Services/socket';
 
 class Controller {
-
-    private onlineUsers : User[] = [];
 
     constructor(io : Server) {
         io.on('connection', (socket) => {
             socket.on('newUser', (email) => {
-                SocketService.addNewUser(email, socket.id);          
-                console.log(SocketService.getUsers());      
+                Service.addNewUser(email, socket.id);          
             })
-            console.log('alguém se conectou');
+
+            socket.on('sendNotification', ({email, message} : {email: string, message: string}) => {
+                const receiver = Service.getUser(email);
+                io.to(receiver?.socketId!).emit('getNotification', message);
+            })
+            
+            socket.on('disconnect', () => {
+                Service.removeUser(socket.id);
+            });
         });
     }
 
