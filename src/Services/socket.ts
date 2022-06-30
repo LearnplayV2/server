@@ -4,17 +4,17 @@ class Service {
 
     private onlineUsers : User[] = [];
 
-    public addNewUser = (email: string, socketId: string) => {
-        !this.onlineUsers.some((user : User) => user.email === email) &&
-        this.onlineUsers.push({ email, socketId });
+    public addNewUser = (uuid: string, socketId: string) => {
+        !this.onlineUsers.some((user : User) => user.uuid === uuid) &&
+        this.onlineUsers.push({ uuid, socketId });
     }
 
     public removeUser = (socketId : string) => {
         this.onlineUsers = this.onlineUsers.filter((user : User) => user.socketId !== socketId);
     }
 
-    public getUser = (email : string) => {
-        return this.onlineUsers.find((user : User) => user.email === email);
+    public getUser = (uuid : string) => {
+        return this.onlineUsers.find((user : User) => user.uuid === uuid);
     }
 
     public getUsers = () => {

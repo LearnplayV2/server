@@ -6,12 +6,14 @@ class Controller {
 
     constructor(io : Server) {
         io.on('connection', (socket) => {
-            socket.on('newUser', (email) => {
-                Service.addNewUser(email, socket.id);          
+            socket.on('newUser', (uuid) => {
+                Service.addNewUser(uuid, socket.id);      
+                console.log(`New user connected`, Service.getUsers());
             })
 
-            socket.on('sendNotification', ({email, message} : {email: string, message: string}) => {
-                const receiver = Service.getUser(email);
+            socket.on('sendNotification', ({uuid, message} : {uuid: string, message: string}) => {
+                const receiver = Service.getUser(uuid);
+                console.log('receiver', receiver, uuid);
                 io.to(receiver?.socketId!).emit('getNotification', message);
             })
             
