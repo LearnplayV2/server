@@ -37,6 +37,22 @@ class Model {
         }
     }
 
+    public async makeAllRead(uuid: string) {
+        const query = await prisma.notifications.updateMany({
+            where: {
+                userId: uuid
+            },
+            data: {
+                read: true
+            }
+        });
+
+        const rows = await this.getAll(uuid);
+
+        return rows;
+
+    }
+
     public async getAll(uuid: string) {
 
         const query = await prisma.notifications.findMany({
