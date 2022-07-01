@@ -21,13 +21,15 @@ class Model {
             // });
 
             // if(row.length === 0)
-                await prisma.notifications.create({
-                    data: {
-                        userId: data.userId,
-                        title: data.title,
-                        description: data?.description,
-                    }
-                });
+            const query = await prisma.notifications.create({
+                data: {
+                    userId: data.userId,
+                    title: data.title,
+                    description: data?.description,
+                }
+            });
+
+            return query;
 
 
         } catch (err: any) {
@@ -36,7 +38,7 @@ class Model {
     }
 
     public async getAll(uuid: string) {
-        
+
         const query = await prisma.notifications.findMany({
             orderBy: {
                 id: 'desc'
@@ -47,7 +49,7 @@ class Model {
         });
 
         return query;
-        
+
     }
 
 }

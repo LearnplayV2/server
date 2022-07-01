@@ -13,11 +13,11 @@ class Controller {
                 console.log(`New user connected`, Service.getUsers());
             })
 
-            socket.on('sendNotification', ({uuid, message} : {uuid: string, message: string}) => {
+            socket.on('sendNotification', async ({uuid, message} : {uuid: string, message: string}) => {
                 const receiver = Service.getUser(uuid);
                 console.log('receiver', receiver, uuid);
-                io.to(receiver?.socketId!).emit('getNotification', message);
-                NotificationsModel.save({userId: uuid, title: message});
+                const data = await NotificationsModel.save({userId: uuid, title: message});
+                io.to(receiver?.socketId!).emit('getNotification', data);
             })
             
             socket.on('disconnect', () => {
