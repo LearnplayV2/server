@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import { RequestError } from "request-error";
 import multer from "multer";
 import Service from '../Services/user';
+import NotificationsModel from '../Models/notifications';
 
 const JWTSECRET = process.env.JWTSECRET;
 
@@ -124,6 +125,17 @@ class Controller {
             return res.status(err?.status ?? 500).json(err);
         }
         
+    }
+
+    public async getNotifications(req: RequestUser, res: Response) {
+        try {
+            const query = await NotificationsModel.getAll(req.userLoggedIn.uuid!);
+
+            return res.json(query);
+
+        } catch(err : any) {
+            return res.status(err?.status ?? 500).json(err);
+        }
     }
 
 }

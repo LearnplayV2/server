@@ -18,9 +18,20 @@ model user {
   status              user_status           @default(ACTIVE)
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
+  notifications       notifications[]
 }
+
 
 enum user_status {
   ACTIVE
   INACTIVE
+}
+
+model notifications {
+  id                  Int            @id @default(autoincrement())
+  user                user           @relation(fields: [userId], references: [uuid])  
+  userId              String         
+  title               String          
+  description         String?
+  read                Boolean?       @default(false)
 }
