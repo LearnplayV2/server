@@ -8,6 +8,7 @@ import { RequestError } from "request-error";
 import multer from "multer";
 import Service from '../Services/user';
 import NotificationsModel from '../Models/notifications';
+import type { RequestId } from "../Types/notifications";
 
 const JWTSECRET = process.env.JWTSECRET;
 
@@ -133,6 +134,23 @@ class Controller {
 
             return res.json(query);
 
+        } catch(err : any) {
+            return res.status(err?.status ?? 500).json(err);
+        }
+    }
+
+    public async getNotification(req: RequestId, res: Response) {
+        
+        try {
+
+            const {id} = req.params;
+
+            const query = await NotificationsModel.get(parseInt(id), req.userLoggedIn.uuid!);
+
+            if(query == null) throw RequestError('Notificação não encontrada', 404);
+
+            return res.json(query);
+            
         } catch(err : any) {
             return res.status(err?.status ?? 500).json(err);
         }

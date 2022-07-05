@@ -13,9 +13,9 @@ class Controller {
                 console.log(`New user connected`, Service.getUsers());
             })
 
-            socket.on('sendNotification', async ({uuid, message} : {uuid: string, message: string}) => {
+            socket.on('sendNotification', async ({uuid, message, description} : {uuid: string, message: string, description?: string}) => {
                 const receiver = Service.getUser(uuid);
-                const data = await NotificationsModel.save({userId: uuid, title: message});
+                const data = await NotificationsModel.save({userId: uuid, title: message, description });
                 if(data) io.to(receiver?.socketId!).emit('getNotification', data);
             })
 

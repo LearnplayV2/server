@@ -11,6 +11,9 @@ class Model {
 
             // check if notification title already exists
             const row = await prisma.notifications.findMany({
+                where : {
+                    userId: data.userId
+                },
                 orderBy: {
                     id: 'asc'
                 }
@@ -60,6 +63,19 @@ class Model {
                 userId: uuid
             }
         });
+
+        return query;
+
+    }
+
+    public async get(id: number, userUuid: string) {
+
+        const query = await prisma.notifications.findFirst({
+            where: {
+                id,
+                userId: userUuid
+            }
+        })
 
         return query;
 
