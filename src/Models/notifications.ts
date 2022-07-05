@@ -19,7 +19,7 @@ class Model {
                 }
             });
 
-            if (row[(row.length - 1)].title == data.title) return false;
+            if (row.length >= 1 && row[(row.length - 1)].title == data.title) return false;
 
             const query = await prisma.notifications.create({
                 data: {
