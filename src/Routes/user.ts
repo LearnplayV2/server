@@ -13,6 +13,6 @@ router.get('/profile/:uuid', ProtectedRoute, Controller.getProfile);
 router.get('/members', ProtectedRoute, Controller.getMembers);
 router.get('/notifications', ProtectedRoute, Controller.getNotifications);
 router.get('/notification/:id', ProtectedRoute, Controller.getNotification);
-
+router.put('/notification/toggle/:id', ProtectedRoute, Controller.toggleNotification);
 
 export default router;

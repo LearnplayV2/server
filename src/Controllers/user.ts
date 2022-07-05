@@ -156,6 +156,22 @@ class Controller {
         }
     }
 
+    public async toggleNotification(req: RequestId, res: Response) {
+
+        try {
+            
+            const {id} = req.params;
+
+            const query = await NotificationsModel.toggleRead(parseInt(id), req.userLoggedIn.uuid!);
+
+            return res.json(query);
+            
+        }catch(err : any) {
+            return res.status(err?.status ?? 500).json(err);
+        }
+        
+    }
+
 }
 
 export default new Controller();

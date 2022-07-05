@@ -53,6 +53,26 @@ class Model {
 
     }
 
+    public async toggleRead(id: number, userId: string) {
+
+        const row = await prisma.notifications.findFirst({ where: { id, userId } });
+
+        const query = await prisma.notifications.updateMany({
+            where: {
+                id,
+                userId
+            },
+            data: {
+                read: !row?.read
+            }
+        });
+
+        const result = await this.getAll(userId);
+
+        return result;
+        
+    }
+
     public async getAll(uuid: string) {
 
         const query = await prisma.notifications.findMany({
