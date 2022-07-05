@@ -16,7 +16,7 @@ class Controller {
             socket.on('sendNotification', async ({uuid, message} : {uuid: string, message: string}) => {
                 const receiver = Service.getUser(uuid);
                 const data = await NotificationsModel.save({userId: uuid, title: message});
-                io.to(receiver?.socketId!).emit('getNotification', data);
+                if(data) io.to(receiver?.socketId!).emit('getNotification', data);
             })
 
             socket.on('makeAllNotificationsRead', async(data : {uuid : string}) => {

@@ -10,17 +10,14 @@ class Model {
         try {
 
             // check if notification title already exists
-            // const row = await prisma.notifications.findMany({
-            //     where: {
-            //         title : data.title
-            //     },
-            //     orderBy: {
-            //         id: 'desc'
-            //     },
-            //     take: 1
-            // });
+            const row = await prisma.notifications.findMany({
+                orderBy: {
+                    id: 'asc'
+                }
+            });
 
-            // if(row.length === 0)
+            if (row[(row.length - 1)].title == data.title) return false;
+
             const query = await prisma.notifications.create({
                 data: {
                     userId: data.userId,
