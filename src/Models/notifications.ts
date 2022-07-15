@@ -29,7 +29,9 @@ class Model {
                 }
             });
 
-            return this.getAll(data.userId);
+            const rows = await this.getAll(data.userId);
+
+            return rows;
 
 
         } catch (err: any) {
