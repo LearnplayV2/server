@@ -7,12 +7,18 @@ import type { Socket } from "socket.io";
 class Controller {
 
     constructor(io : Server) {
-        io.on('connection', (socket : Socket) => {
+        io.on('connection', (socket : Socket) => { 
+
+            socket.on('test', (data: any) => {
+                console.log("TESTING SOCKET DATA:");
+                console.log(data);
+            });
+
             socket.on('newUser', (uuid: string) => {
                 Service.addNewUser(uuid, socket.id);      
                 console.log(`New user connected`, Service.getUsers());
             })
-
+            
             socket.on('sendNotification', async ({uuid, message, description} : {uuid: string, message: string, description?: string}) => {
                 const receiver = Service.getUser(uuid);
                 const data = await NotificationsModel.save({userId: uuid, title: message, description });

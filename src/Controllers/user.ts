@@ -84,7 +84,8 @@ class Controller {
 
         upload(req, res, (err) => {
             if (!err) return res.status(200).json({ message: 'A foto de perfil foi alterada!', filename: `${fileName}.png` });
-
+            
+            console.log(err);
             return res.status(500).json(err);
         });
     }
@@ -170,6 +171,18 @@ class Controller {
             return res.status(err?.status ?? 500).json(err);
         }
         
+    }
+
+    public async makeAllNotificationRead(req: RequestUser, res: Response) {
+        try {
+
+            const query = await NotificationsModel.makeAllRead(req.userLoggedIn.uuid!);
+
+            return res.json(query);
+
+        } catch(err : any) {
+            return res.status(err?.status ?? 500).json(err);
+        }
     }
 
 }

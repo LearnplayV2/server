@@ -29,7 +29,7 @@ class Model {
                 }
             });
 
-            return query;
+            return this.getAll(data.userId);
 
 
         } catch (err: any) {

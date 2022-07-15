@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import IndexController from './src/Controllers/index';
 import UserRoutes from './src/Routes/user';
+import NotificationRoutes from './src/Routes/notifications';
 import { Server } from 'socket.io';
 import type { SocketRequest } from './src/Types/socket';
 import SocketController from './src/Controllers/socket';
@@ -31,5 +32,6 @@ app.use((req: SocketRequest, res: Response, next: NextFunction) => {
 //* --- Basic Routes
 app.get('/', IndexController.greetings);
 app.use('/user', UserRoutes);
+app.use('/user', NotificationRoutes);
 
 app.listen(process.env.API_PORT);

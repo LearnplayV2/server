@@ -7,12 +7,10 @@ const router = Router();
 router.post('/register', Controller.create);
 router.post('/login', Controller.login);
 router.get('/refresh', ProtectedRoute, Controller.refresh);
+
 router.post('/set-profile-picture', ProtectedRoute, Controller.setProfilePicture);
 router.get('/get-profile-picture/:uuid', Controller.getProfilePicture);
 router.get('/profile/:uuid', ProtectedRoute, Controller.getProfile);
 router.get('/members', ProtectedRoute, Controller.getMembers);
-router.get('/notifications', ProtectedRoute, Controller.getNotifications);
-router.get('/notification/:id', ProtectedRoute, Controller.getNotification);
-router.put('/notification/toggle/:id', ProtectedRoute, Controller.toggleNotification);
 
 export default router;
