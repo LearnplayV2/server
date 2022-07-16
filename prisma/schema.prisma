@@ -34,4 +34,6 @@ model notifications {
   title               String          
   description         String?
   read                Boolean?       @default(false)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
 }
