@@ -116,10 +116,10 @@ class Controller {
 
     }
 
-    public async getMembers(req: Request, res: Response) {
+    public async getMembers(req: RequestUser, res: Response) {
 
         try {   
-            const query = await Model.getMembers();
+            const query = await Model.getMembers(req.userLoggedIn.uuid!);
 
             return res.json(query);
 

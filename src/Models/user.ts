@@ -51,13 +51,16 @@ class Model {
         }
     }
 
-    public async getMembers() {
+    public async getMembers(uuid: string) {
         try {
             const query = await prisma.user.findMany({
                 skip: 0,
                 take: 5,
                 where: {
-                    status: 'ACTIVE'
+                    status: 'ACTIVE',
+                    NOT: {
+                        uuid
+                    }
                 },
                 orderBy: {
                     createdAt: 'desc'
