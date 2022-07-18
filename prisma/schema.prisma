@@ -19,6 +19,8 @@ model user {
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
   notifications       notifications[]
+  group_member        group_members[]
+  groups_staff        group_staffs[]
 }
 
 
@@ -34,6 +36,36 @@ model notifications {
   title               String          
   description         String?
   read                Boolean?       @default(false)
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+}
+
+model groups {
+  uuid                String         @id @default(uuid())
+  title               String
+  description         String?
+  visibility          group_status   @default(PUBLIC)
+  staffs              group_staffs[] 
+  members             group_members[]
+}
+
+enum group_status {
+  PUBLIC
+  PRIVATE
+}
+
+model group_staffs {
+  id                  Int            @id @default(autoincrement())
+  groups              groups         @relation(fields: [groupId], references: [uuid])
+  groupId             String
+  staff               user           @relation(fields: [staffId], references: [uuid]) 
+  staffId             String
+}
+
+model group_members {
+  id                  Int            @id @default(autoincrement())
+  groups              groups         @relation(fields: [groupId], references: [uuid])
+  groupId             String
+  user                user           @relation(fields: [userId], references: [uuid]) 
+  userId              String
 }

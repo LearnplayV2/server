@@ -3,6 +3,7 @@ import cors from 'cors';
 import IndexController from './src/Controllers/index';
 import UserRoutes from './src/Routes/user';
 import NotificationRoutes from './src/Routes/notifications';
+import GroupRoutes from './src/Routes/groups';
 import { Server } from 'socket.io';
 import type { SocketRequest } from './src/Types/socket';
 import SocketController from './src/Controllers/socket';
@@ -33,5 +34,6 @@ app.use((req: SocketRequest, res: Response, next: NextFunction) => {
 app.get('/', IndexController.greetings);
 app.use('/user', UserRoutes);
 app.use('/user', NotificationRoutes);
+app.use('/group', GroupRoutes);
 
 app.listen(process.env.API_PORT);
