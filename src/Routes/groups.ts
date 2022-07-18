@@ -4,7 +4,7 @@ import Controller from '../Controllers/groups';
 
 const router = Router();
 
-router.get('/', ProtectedRoute, Controller.getAll);
+router.get('/page/:page', ProtectedRoute, Controller.getAll);
 router.post('/new', ProtectedRoute, Controller.create);
 
 export default router;

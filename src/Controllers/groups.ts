@@ -1,12 +1,14 @@
 import type { Response } from 'express';
 import Model from '../Models/groups';
+import type { RequestGroup } from '../Types/groups';
 import type { RequestUser } from '../Types/user';
 
 class Controller {
 
-    public async getAll(req: Request, res: Response) {
+    public async getAll(req: RequestGroup, res: Response) {
         try {
-            const request = await Model.getAll();
+            const page = parseInt(req.params.page);
+            const request = await Model.getAll({page});
 
             res.json(request);
 

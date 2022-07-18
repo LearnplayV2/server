@@ -5,13 +5,25 @@ const prisma = new PrismaClient();
 
 class Model {
 
-    public async getAll() {
+    public async getAll({page} : {page: number}) {
+
+        const limit = 2;
+        const totalPages = Math.floor(limit/page);
+        
         const query = await prisma.groups.findMany({
-            skip: 0,
-            take: 2
+            skip: page,
+            take: limit,
+            orderBy: {
+                createdAt: 'desc'
+            }
         });
 
-        return query;
+        return {
+            page: page,
+            totalPages,
+            hasNextpage: page < totalPages,
+            groups: query
+        };
     }
 
     public async create(data : {userId: string, title: string, description?: string, visibility?: GroupVisibility}) {

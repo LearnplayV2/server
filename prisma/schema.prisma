@@ -41,12 +41,14 @@ model notifications {
 }
 
 model groups {
-  uuid                String         @id @default(uuid())
+  uuid                String            @id @default(uuid())
   title               String
   description         String?
-  visibility          group_status   @default(PUBLIC)
+  visibility          group_status      @default(PUBLIC)
   staffs              group_staffs[] 
   members             group_members[]
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
 }
 
 enum group_status {
