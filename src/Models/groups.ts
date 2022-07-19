@@ -24,8 +24,8 @@ class Model {
 
         return {
             page: page,
-            pagesRemaining: totalPages - 1,
-            hasNextpage: page < totalPages,
+            totalPages: totalPages - 1,
+            hasNextPage: (totalPages - 1) > 0,
             groups: query
         };
     }
