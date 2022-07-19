@@ -109,8 +109,12 @@ class Model {
             include: {
                 staffs: {
                     include: {
-                        staff: true
-                    }
+                        staff: {
+                            select: {
+                                name: true,
+                            }
+                        }
+                    },
                 }
             }
         });
