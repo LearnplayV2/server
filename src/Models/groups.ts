@@ -9,8 +9,16 @@ class Model {
     public async getAll({page} : {page: number}) {
 
         const limit = 2;
-        const totalPages = Math.floor(limit/page);
+        const totalPages = Math.floor(limit/page) - 1;
+        
+        const totalItems = await prisma.groups.count({
+            where: {
+                visibility: 'PUBLIC'
+            }
+        });
 
+        const hasNextPage = (totalItems > limit) && totalPages > 0;
+        
         const query = await prisma.groups.findMany({
             skip: (limit * (page - 1)),
             take: limit,
@@ -24,8 +32,9 @@ class Model {
 
         return {
             page: page,
-            totalPages: totalPages - 1,
-            hasNextPage: (totalPages - 1) > 0,
+            totalPages: (totalItems == limit) ? 0 : totalPages,
+            hasNextPage,
+            totalItems,
             groups: query
         };
     }
@@ -66,7 +75,7 @@ class Model {
     
             if(find_staff == null) throw new Error('Você não tem permissões pra fazer isso');
             
-            // then delete members, staffs & users
+            // then delete groups and relations
             Promise.all([
                 prisma.group_members.deleteMany({ where: { groupId: find_staff.groupId } }),
                 prisma.group_staffs.deleteMany({where: {groupId: find_staff.groupId}}),
