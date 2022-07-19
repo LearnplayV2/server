@@ -32,7 +32,7 @@ class Model {
 
         return {
             page: page,
-            totalPages: (totalItems == limit) ? 0 : totalPages,
+            totalPages: (totalItems <= limit) ? 0 : totalPages,
             hasNextPage,
             totalItems,
             groups: query
