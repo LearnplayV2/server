@@ -9,7 +9,6 @@ class Model {
     public async getAll({page} : {page: number}) {
 
         const limit = 2;
-        const totalPages = Math.floor(limit/page) - 1;
         
         const totalItems = await prisma.groups.count({
             where: {
@@ -17,8 +16,6 @@ class Model {
             }
         });
 
-        const hasNextPage = (totalItems > limit) && totalPages > 0;
-        
         const query = await prisma.groups.findMany({
             skip: (limit * (page - 1)),
             take: limit,
@@ -30,10 +27,12 @@ class Model {
             }
         });
 
+        const totalPages = Math.ceil(totalItems/limit);
+
         return {
             page: page,
-            totalPages: (totalItems <= limit) ? 0 : totalPages,
-            hasNextPage,
+            totalPages,
+            hasNextPage: page < totalPages,
             totalItems,
             groups: query
         };
