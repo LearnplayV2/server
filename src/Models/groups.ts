@@ -99,6 +99,9 @@ class Model {
         const query = await prisma.groups.findMany({
             skip: (limitPerPage * (data.page - 1)),
             take: limitPerPage,
+            orderBy: {
+                createdAt: 'desc'
+            },
             where: {
                 staffs: {
                     some: {
