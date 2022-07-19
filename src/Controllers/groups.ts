@@ -1,4 +1,5 @@
 import type { Response } from 'express';
+import { RequestError } from 'request-error';
 import Model from '../Models/groups';
 import type { RequestGroup } from '../Types/groups';
 import type { RequestUser } from '../Types/user';
@@ -18,6 +19,10 @@ class Controller {
     public async create(req: RequestUser, res: Response) {
         const { title, visibility, description } = req.body;
         try {
+
+            if(title.length > 31) throw RequestError('O grupo deve conter no máximo 31 caracteres');
+            if(title.length < 4) throw RequestError('O grupo deve conter no mínimo 4 caracteres');
+
             const request = await Model.create({
                 title,
                 userId: req.userLoggedIn.uuid!,
