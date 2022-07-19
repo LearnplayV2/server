@@ -4,12 +4,12 @@ import type { GroupVisibility } from "../Types/groups";
 
 const prisma = new PrismaClient();
 
+const limitPerPage = 4;
+
 class Model {
 
     public async getAll({page} : {page: number}) {
 
-        const limit = 2;
-        
         const totalItems = await prisma.groups.count({
             where: {
                 visibility: 'PUBLIC'
@@ -17,8 +17,8 @@ class Model {
         });
 
         const query = await prisma.groups.findMany({
-            skip: (limit * (page - 1)),
-            take: limit,
+            skip: (limitPerPage * (page - 1)),
+            take: limitPerPage,
             where: {
                 visibility: 'PUBLIC'
             },
@@ -27,7 +27,7 @@ class Model {
             }
         });
 
-        const totalPages = Math.ceil(totalItems/limit);
+        const totalPages = Math.ceil(totalItems/limitPerPage);
 
         return {
             page: page,
@@ -59,8 +59,6 @@ class Model {
     }
 
     public async delete(data: {id: string, userId: string}) {
-        console.log(data.userId);
-
         try {
 
             const find_staff = await prisma.group_staffs.findFirst({
@@ -86,6 +84,47 @@ class Model {
         }
         
     } 
+    
+    public async myGroups(data: {userId: string, page: number}) {
+        const totalItems = await prisma.groups.count({
+            where: {
+                staffs: {
+                    some: {
+                        staffId: data.userId
+                    }
+                }
+            }
+        });
+
+        const query = await prisma.groups.findMany({
+            skip: (limitPerPage * (data.page - 1)),
+            take: limitPerPage,
+            where: {
+                staffs: {
+                    some: {
+                        staffId: data.userId
+                    }
+                }
+            },
+            include: {
+                staffs: {
+                    include: {
+                        staff: true
+                    }
+                }
+            }
+        });
+
+        const totalPages = Math.ceil(totalItems/limitPerPage);
+
+        return {
+            page: data.page,
+            totalPages,
+            hasNextPage: data.page < totalPages,
+            totalItems,
+            groups: query
+        };
+    }
     
 }
 
