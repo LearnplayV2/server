@@ -77,9 +77,9 @@ class Model {
             
             // then delete groups and relations
             Promise.all([
-                prisma.group_members.deleteMany({ where: { groupId: find_staff.groupId } }),
-                prisma.group_staffs.deleteMany({where: {groupId: find_staff.groupId}}),
-                prisma.groups.delete({where: {uuid: find_staff.groupId}})
+                prisma.group_members.deleteMany({ where: { groupId: data.id } }),
+                prisma.group_staffs.deleteMany({where: {groupId: data.id}}),
+                prisma.groups.delete({where: {uuid: data.id}})
             ]);
             
         } catch(err: any) {
