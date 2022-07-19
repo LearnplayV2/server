@@ -32,7 +32,20 @@ class Controller {
         } catch(err: any) {
             res.status(err?.status ?? 500).json(err);
         }
+    }
 
+    public async delete(req: RequestUser, res: Response) {
+        const { id } = req.params;
+        try {
+            const request = await Model.delete({
+                id,
+                userId: req.userLoggedIn.uuid!
+            });
+
+            res.json({message: 'Grupo deletado com sucesso!'});
+        } catch(err: any) {
+            res.status(err?.status ?? 500).json(err);
+        }
     }
 
 }
