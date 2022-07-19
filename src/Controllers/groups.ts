@@ -20,8 +20,9 @@ class Controller {
         const { title, visibility, description } = req.body;
         try {
 
-            if(title.length > 31) throw RequestError('O grupo deve conter no máximo 31 caracteres');
-            if(title.length < 4) throw RequestError('O grupo deve conter no mínimo 4 caracteres');
+            if(title.length > 31) throw RequestError('O título deve conter no máximo 31 caracteres');
+            if(title.length < 4) throw RequestError('O título deve conter no mínimo 4 caracteres');
+            if(description.length > 400) throw RequestError('A descrição deve conter no máximo 400 caracteres');
 
             const request = await Model.create({
                 title,
