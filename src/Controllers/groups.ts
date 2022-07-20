@@ -54,7 +54,7 @@ class Controller {
     public async myGroups(req: RequestUser, res: Response) {
         try {
             const page = parseInt(req.params.page);
-            const response = await Model.myGroups({page, userId: req.userLoggedIn.uuid!});
+            const response = await Model.myGroups({page, userId: req.userLoggedIn.uuid!, filter: req.params.filter});
 
             res.json(response);
         } catch (err: any) {

@@ -4,7 +4,7 @@ import type { GroupVisibility } from "../Types/groups";
 
 const prisma = new PrismaClient();
 
-const limitPerPage = 4;
+const limitPerPage = 4; 
 
 class Model {
 
@@ -85,9 +85,12 @@ class Model {
         
     } 
     
-    public async myGroups(data: {userId: string, page: number}) {
+    public async myGroups(data: {userId: string, page: number, filter?: string}) {
         const totalItems = await prisma.groups.count({
             where: {
+                title: {
+                    contains: data.filter
+                },
                 staffs: {
                     some: {
                         staffId: data.userId
@@ -103,6 +106,9 @@ class Model {
                 createdAt: 'desc'
             },
             where: {
+                title: {
+                    contains: data.filter
+                },
                 staffs: {
                     some: {
                         staffId: data.userId
