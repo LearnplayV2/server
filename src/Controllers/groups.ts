@@ -1,4 +1,4 @@
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import { RequestError } from 'request-error';
 import Model from '../Models/groups';
 import type { RequestGroup } from '../Types/groups';
