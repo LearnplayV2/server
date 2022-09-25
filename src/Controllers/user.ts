@@ -5,8 +5,6 @@ import Model from '../Models/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { RequestError } from "request-error";
-import multer from "multer";
-import Service from '../Services/user';
 import NotificationsModel from '../Models/notifications';
 import type { RequestId } from "../Types/notifications";
 
@@ -46,6 +44,8 @@ class Controller {
 
             let query = await Model.login(email!);
 
+            console.log(query)
+            
             if (query?.status == 'INACTIVE') throw RequestError('Este usuário foi desativado', 401);
             if (query == null) throw RequestError('Usuário não encontrado.', 404);
             if (!bcrypt.compareSync(password!, query.password)) throw RequestError('Não foi possível fazer login');
@@ -78,28 +78,32 @@ class Controller {
         }
     }
 
-    public async setProfilePicture(req: RequestUser, res: Response) {
-        const fileName = req.userLoggedIn.uuid;
-        const upload = multer(Service.multerConfig('user', fileName)).single('file');
+    public async setProfilePicture(req: Request, res: Response) {
+        const {userLoggedIn} = req as RequestUser;
 
-        upload(req, res, (err) => {
-            if (!err) return res.status(200).json({ message: 'A foto de perfil foi alterada!', filename: `${fileName}.png` });
+        try {
+            if(req.body.base64File == undefined) throw RequestError('Ocorreu um erro do servidor', 500);
+
+            await Model.setProfilePicture(userLoggedIn.uuid!, req.body.base64File);
+
+            return res.status(200).json();
             
-            console.log(err);
-            return res.status(500).json(err);
-        });
+        } catch(err: any) {
+            res.status(err?.status ?? 500).json(err);
+        }
+       
     }
 
-    public async getProfilePicture(req: RequestUser, res: Response) {
+    // public async getProfilePicture(req: RequestUser, res: Response) {
 
-        const { uuid } = req.params;
+    //     const { uuid } = req.params;
 
-        const photo = await Service.getProfilePicture(uuid);
+    //     const photo = await Service.getProfilePicture(uuid);
 
-        res.writeHead(200, { 'Content-Type': 'image/png' });
-        return res.end(photo);
+    //     res.writeHead(200, { 'Content-Type': 'image/png' });
+    //     return res.end(photo);
 
-    }
+    // }
 
     public async getProfile(req: RequestUser, res: Response) {
 

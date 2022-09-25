@@ -9,7 +9,7 @@ router.post('/login', Controller.login);
 router.get('/refresh', ProtectedRoute, Controller.refresh);
 
 router.post('/set-profile-picture', ProtectedRoute, Controller.setProfilePicture);
-router.get('/get-profile-picture/:uuid', Controller.getProfilePicture);
+// router.get('/get-profile-picture/:uuid', Controller.getProfilePicture);
 router.get('/profile/:uuid', ProtectedRoute, Controller.getProfile);
 router.get('/members', ProtectedRoute, Controller.getMembers);
 

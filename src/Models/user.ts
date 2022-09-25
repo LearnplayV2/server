@@ -11,6 +11,7 @@ class Model {
         const {email, name, password} = data;
 
         try {
+            if( !email || !name || !password) throw RequestError('Não foi possível criar usuário', 422);
             const query = await prisma.user.create({ data: { email, name, password: bcrypt.hashSync(password, 10) } });
     
             return query;
@@ -29,7 +30,7 @@ class Model {
 
     public async login(email: string) {
         try {
-            const query = await prisma.user.findUnique({where: {email}});
+            const query = await prisma.user.findUnique( { where: {email}, } );
 
             return query;
 
@@ -42,7 +43,7 @@ class Model {
     public async findUserById(uuid: string) {
         try {
 
-            const query = await prisma.user.findFirst({where: {uuid}});
+            const query = await prisma.user.findFirst( { where: {uuid}, include: {user_items: true}} );
 
             return query;
 
@@ -68,12 +69,35 @@ class Model {
                 select: {
                     uuid: true,
                     name: true,
-                    createdAt: true
-                }
+                    createdAt: true,
+                    user_items: true
+                },
             });
 
             return query;
         } catch(err : any) {
+            throw RequestError(err, 422);
+        }
+    }
+
+    public async setProfilePicture(userId: string, base64Photo: string) {
+        try {
+            await prisma.user_items.upsert(
+                {
+                    where: {
+                        userId: userId,
+                    },
+                    update: {
+                        photo: base64Photo
+                    },
+                    create: {
+                        userId: userId,
+                        photo: base64Photo
+                    }
+                }
+            );
+
+        } catch(err: any) {
             throw RequestError(err, 422);
         }
     }
