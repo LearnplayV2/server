@@ -44,8 +44,6 @@ class Controller {
 
             let query = await Model.login(email!);
 
-            console.log(query)
-            
             if (query?.status == 'INACTIVE') throw RequestError('Este usuário foi desativado', 401);
             if (query == null) throw RequestError('Usuário não encontrado.', 404);
             if (!bcrypt.compareSync(password!, query.password)) throw RequestError('Não foi possível fazer login');

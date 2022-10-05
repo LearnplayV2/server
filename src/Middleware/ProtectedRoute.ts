@@ -21,9 +21,6 @@ export default async function ProtectedRoute(req: Request, res: Response, next: 
             const user = await prisma.user.findUnique({
                 where: {
                     uuid: data.uuid
-                },
-                include: {
-                    user_items: true
                 }
             });
 
