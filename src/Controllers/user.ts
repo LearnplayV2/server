@@ -92,6 +92,20 @@ class Controller {
        
     }
 
+    public async getUserItems(req: Request, res: Response) {
+        try {
+            const {userLoggedIn} = req as RequestUser;
+
+            const userItems = await Model.getUserItems(userLoggedIn.uuid!);
+
+            return res.status(200).json(userItems);
+
+        } catch(err: any) {
+            res.status(err?.status ?? 500).json(err);
+        }
+        
+    }
+
     // public async getProfilePicture(req: RequestUser, res: Response) {
 
     //     const { uuid } = req.params;

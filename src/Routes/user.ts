@@ -8,6 +8,7 @@ router.post('/register', Controller.create);
 router.post('/login', Controller.login);
 router.get('/refresh', ProtectedRoute, Controller.refresh);
 
+router.get('/user-items', ProtectedRoute, Controller.getUserItems);
 router.post('/set-profile-picture', ProtectedRoute, Controller.setProfilePicture);
 // router.get('/get-profile-picture/:uuid', Controller.getProfilePicture);
 router.get('/profile/:uuid', ProtectedRoute, Controller.getProfile);

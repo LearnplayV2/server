@@ -102,6 +102,14 @@ class Model {
         }
     }
 
+    public getUserItems(userId: string) {
+        return prisma.user_items.findUnique({
+            where: {
+                userId
+            }
+        })
+    }
+
 }
 
 export default new Model();
