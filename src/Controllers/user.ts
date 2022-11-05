@@ -37,8 +37,6 @@ class Controller {
 
     public async login(req: Request, res: Response) {
         const { email, password } = req.body as User;
-
-        
         try {
             CheckLogin({ email, password } as User);
 
@@ -62,14 +60,16 @@ class Controller {
 
     }
 
-    public async refresh(req: RequestUser, res: Response) {
+    public async refresh(req: Request, res: Response) {
+        const {userLoggedIn} = req as RequestUser;
 
         try {
-            const query = await Model.findUserById(req.userLoggedIn.uuid!);
+            if(userLoggedIn.uuid) {
+                await Model.findUserById(userLoggedIn.uuid);
+                return res.json(userLoggedIn);
+            }
 
-            const { userLoggedIn } = req as RequestUser;
-
-            return res.json(userLoggedIn);
+            throw RequestError('Id de usuário não encontrado', 422);
 
         } catch (err: any) {
             res.status(err?.status ?? 500).json(err);
@@ -117,8 +117,8 @@ class Controller {
 
     // }
 
-    public async getProfile(req: RequestUser, res: Response) {
-
+    public async getProfile(req: Request, res: Response) {
+        const {} = req as RequestUser;
         const { uuid } = req.params;
 
         const query = await Model.findUserById(uuid);
@@ -132,10 +132,12 @@ class Controller {
 
     }
 
-    public async getMembers(req: RequestUser, res: Response) {
+    public async getMembers(req: Request, res: Response) {
+        const {userLoggedIn} = req as RequestUser;
 
         try {   
-            const query = await Model.getMembers(req.userLoggedIn.uuid!);
+            if(!userLoggedIn.uuid) throw RequestError('id de usuário não encontrado', 422);
+            const query = await Model.getMembers(userLoggedIn.uuid);
 
             return res.json(query);
 
@@ -145,9 +147,11 @@ class Controller {
         
     }
 
-    public async getNotifications(req: RequestUser, res: Response) {
+    public async getNotifications(req: Request, res: Response) {
+        const {userLoggedIn} = req as RequestUser;
         try {
-            const query = await NotificationsModel.getAll(req.userLoggedIn.uuid!);
+            if(!userLoggedIn.uuid) throw RequestError('id de usuário não encontrado', 422);
+            const query = await NotificationsModel.getAll(userLoggedIn.uuid);
 
             return res.json(query);
 
@@ -156,13 +160,14 @@ class Controller {
         }
     }
 
-    public async getNotification(req: RequestId, res: Response) {
-        
+    public async getNotification(req: Request, res: Response) {
+        const { userLoggedIn } = req as RequestId;
         try {
 
             const {id} = req.params;
 
-            const query = await NotificationsModel.get(parseInt(id), req.userLoggedIn.uuid!);
+            if(!userLoggedIn.uuid) throw RequestError('id de usuário não encontrado', 422);
+            const query = await NotificationsModel.get(parseInt(id), userLoggedIn.uuid);
 
             if(query == null) throw RequestError('Notificação não encontrada', 404);
 
@@ -173,13 +178,13 @@ class Controller {
         }
     }
 
-    public async toggleNotification(req: RequestId, res: Response) {
-
+    public async toggleNotification(req: Request, res: Response) {
+        const {userLoggedIn} = req as RequestUser;
         try {
-            
             const {id} = req.params;
 
-            const query = await NotificationsModel.toggleRead(parseInt(id), req.userLoggedIn.uuid!);
+            if(!userLoggedIn.uuid) throw RequestError('id de usuário não encontrado', 422);
+            const query = await NotificationsModel.toggleRead(parseInt(id), userLoggedIn.uuid);
 
             return res.json(query);
             
@@ -189,10 +194,11 @@ class Controller {
         
     }
 
-    public async makeAllNotificationRead(req: RequestUser, res: Response) {
+    public async makeAllNotificationRead(req: Request, res: Response) {
+        const {userLoggedIn} = req as RequestUser;
         try {
-
-            const query = await NotificationsModel.makeAllRead(req.userLoggedIn.uuid!);
+            if(!userLoggedIn.uuid) throw RequestError('id de usuário não encontrado', 422);
+            const query = await NotificationsModel.makeAllRead(userLoggedIn.uuid);
 
             return res.json(query);
 

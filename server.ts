@@ -1,11 +1,10 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { NextFunction, Response } from 'express';
 import cors from 'cors';
 import IndexController from './src/Controllers/index';
 import UserRoutes from './src/Routes/user';
 import NotificationRoutes from './src/Routes/notifications';
 import GroupRoutes from './src/Routes/groups';
 import { Server } from 'socket.io';
-import type { SocketRequest } from './src/Types/socket';
 import SocketController from './src/Controllers/socket';
 
 const app = express();
@@ -15,7 +14,7 @@ const corsConfig = {
     optionsSuccessStatus: 200 
 }
 
-const io = new Server(process.env.SOCKET_PORT, {
+const io = new Server(process.env.SOCKET_PORT as any, {
     cors: corsConfig
 });
 
@@ -25,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/public/', express.static(__dirname + '/public'));
 app.use(express.json({limit: '500mb'}));
 app.use(cors(corsConfig));
-app.use((req: SocketRequest, res: Response, next: NextFunction) => {
+app.use((req: any, res: Response, next: NextFunction) => {
     req.io = io;
     next();
 });

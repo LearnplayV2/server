@@ -5,9 +5,10 @@ import type { RequestGroup } from '../Types/groups';
 import type { RequestUser } from '../Types/user';
 
 class Controller {
-    public async getAll(req: RequestGroup, res: Response) {
+    public async getAll(req: Request, res: Response) {
+        const {params} = req as RequestGroup;
         try {
-            const page = parseInt(req.params.page);
+            const page = parseInt(params.page);
             const request = await Model.getAll({ page });
 
             res.json(request);
@@ -16,7 +17,8 @@ class Controller {
         }
     }
 
-    public async create(req: RequestUser, res: Response) {
+    public async create(req: Request, res: Response) {
+        const {userLoggedIn} = req as RequestUser;
         const { title, visibility, description } = req.body;
         try {
 
@@ -26,7 +28,7 @@ class Controller {
 
             const request = await Model.create({
                 title,
-                userId: req.userLoggedIn.uuid!,
+                userId: userLoggedIn.uuid!,
                 visibility: visibility,
                 description,
             });
@@ -37,12 +39,13 @@ class Controller {
         }
     }
 
-    public async delete(req: RequestUser, res: Response) {
+    public async delete(req: Request, res: Response) {
+        const {userLoggedIn} = req as RequestUser;
         const { id } = req.params;
         try {
             const request = await Model.delete({
                 id,
-                userId: req.userLoggedIn.uuid!,
+                userId: userLoggedIn.uuid!,
             });
 
             res.json({ message: 'Grupo deletado com sucesso!' });
@@ -51,10 +54,11 @@ class Controller {
         }
     }
 
-    public async myGroups(req: RequestUser, res: Response) {
+    public async myGroups(req: Request, res: Response) {
+        const {userLoggedIn} = req as RequestUser;
         try {
             const page = parseInt(req.params.page);
-            const response = await Model.myGroups({page, userId: req.userLoggedIn.uuid!, filter: req.params.filter});
+            const response = await Model.myGroups({page, userId: userLoggedIn.uuid!, filter: req.params.filter});
 
             res.json(response);
         } catch (err: any) {
