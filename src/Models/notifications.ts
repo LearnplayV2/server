@@ -21,7 +21,7 @@ class Model {
 
             if (row.length >= 1 && row[(row.length - 1)].title == data.title) return false;
 
-            const query = await prisma.notifications.create({
+            await prisma.notifications.create({
                 data: {
                     userId: data.userId,
                     title: data.title,
@@ -40,7 +40,7 @@ class Model {
     }
 
     public async makeAllRead(uuid: string) {
-        const query = await prisma.notifications.updateMany({
+        await prisma.notifications.updateMany({
             where: {
                 userId: uuid
             },
@@ -59,7 +59,7 @@ class Model {
 
         const row = await prisma.notifications.findFirst({ where: { id, userId } });
 
-        const query = await prisma.notifications.updateMany({
+        await prisma.notifications.updateMany({
             where: {
                 id,
                 userId

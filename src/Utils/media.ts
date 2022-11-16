@@ -35,8 +35,7 @@ class Media {
     }
 
     async getBase64File(fileTitle: string) : Promise<string> {
-        console.log('hello')
-        console.log('this.path', this.path);
+        console.log('get base64 file');
         let currentPath = `${this.path}/${fileTitle}`;
         if(this.fileExists(fileTitle)) {
             const find = fs.readdirSync(this.path).find(fn => fn.startsWith(fileTitle));

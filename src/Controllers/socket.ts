@@ -1,5 +1,4 @@
 import type { Server } from "socket.io";
-import type {User} from '../Types/user';
 import Service from '../Services/socket';
 import NotificationsModel from '../Models/notifications';
 import type { Socket } from "socket.io";
@@ -10,8 +9,7 @@ class Controller {
         io.on('connection', (socket : Socket) => { 
 
             socket.on('test', (data: any) => {
-                console.log("TESTING SOCKET DATA:");
-                console.log(data);
+                console.log({event: 'test', data});
             });
 
             socket.on('newUser', (uuid: string) => {
