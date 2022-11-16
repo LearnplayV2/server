@@ -13,6 +13,8 @@ const JWTSECRET = process.env.JWTSECRET;
 
 class Controller {
 
+    static mediaUserProfilePath = 'user/profile-picture';
+
     public async create(req: Request, res: Response) {
         const { email, password, name } = req.body as User;
 
@@ -79,14 +81,14 @@ class Controller {
 
     public async setProfilePicture(req: Request, res: Response) {
         const {userLoggedIn} = req as RequestUser;
-
         try {
             if(req.body.base64File == undefined) throw RequestError('Ocorreu um erro do servidor', 500);
             if(!userLoggedIn.uuid) throw RequestError('Usuário não encontrado', 422);
-            else 
+            else {
                 // save file in local storage
-                await Media.saveFiles(userLoggedIn.uuid, req.body.base64File);
-
+                await new Media(Controller.mediaUserProfilePath).saveFiles(userLoggedIn.uuid, req.body.base64File);
+            }
+            
             return res.status(200).json();
             
         } catch(err: any) {
@@ -98,11 +100,11 @@ class Controller {
     public async getUserItems(req: Request, res: Response) {
         try {
             const {userLoggedIn} = req as RequestUser;
-
+            
             if(!userLoggedIn.uuid) throw RequestError('Ocorreu um erro do servidor', 500);
 
-            const userItems = await Media.getBase64File(userLoggedIn.uuid);
-
+            const userItems = await new Media(Controller.mediaUserProfilePath).getBase64File(userLoggedIn.uuid);
+            
             return res.status(200).json({photo: userItems });
 
         } catch(err: any) {

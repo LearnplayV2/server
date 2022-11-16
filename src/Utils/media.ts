@@ -3,9 +3,13 @@ import fs from 'fs';
 import { RequestError } from 'request-error';
 
 class Media {
-    static path = 'src/media/user/profile-picture';
-
-    static async saveFiles(id : string, base64: string) {
+    private path = '';
+    
+    constructor(folder: string) {
+        this.path = 'src/media/'.concat(folder);
+    }
+    
+    async saveFiles(id : string, base64: string) {
         if (base64.includes(';base64,')) base64 = base64.split(';base64,')[1];
         const buffer = Buffer.from(base64, 'base64');
 
@@ -30,7 +34,9 @@ class Media {
         return fileNewName;
     }
 
-    static async getBase64File(fileTitle: string) : Promise<string> {
+    async getBase64File(fileTitle: string) : Promise<string> {
+        console.log('hello')
+        console.log('this.path', this.path);
         let currentPath = `${this.path}/${fileTitle}`;
         if(this.fileExists(fileTitle)) {
             const find = fs.readdirSync(this.path).find(fn => fn.startsWith(fileTitle));
@@ -51,14 +57,14 @@ class Media {
         
     }
 
-    static async removeFile(fileName: string) {
+    async removeFile(fileName: string) {
         const path = `${this.path}/${fileName}`;
         if(this.fileExists(fileName)) {
             fs.unlinkSync(path);
         }
     }
 
-    private static fileExists(fileName: string) {
+    private fileExists(fileName: string) {
         const file = fileName.split('.');
         const findByFileName = fs.readdirSync(this.path).some(fn => fn.startsWith(file[0]));
         
