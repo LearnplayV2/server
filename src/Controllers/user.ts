@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import { RequestError } from "request-error";
 import NotificationsModel from '../Models/notifications';
 import type { RequestId } from "../Types/notifications";
+import Media from "../Utils/media";
 
 const JWTSECRET = process.env.JWTSECRET;
 
@@ -81,8 +82,10 @@ class Controller {
 
         try {
             if(req.body.base64File == undefined) throw RequestError('Ocorreu um erro do servidor', 500);
-
-            await Model.setProfilePicture(userLoggedIn.uuid!, req.body.base64File);
+            if(!userLoggedIn.uuid) throw RequestError('Usuário não encontrado', 422);
+            else 
+                // save file in local storage
+                await Media.saveFiles(userLoggedIn.uuid, req.body.base64File);
 
             return res.status(200).json();
             
@@ -96,26 +99,17 @@ class Controller {
         try {
             const {userLoggedIn} = req as RequestUser;
 
-            const userItems = await Model.getUserItems(userLoggedIn.uuid!);
+            if(!userLoggedIn.uuid) throw RequestError('Ocorreu um erro do servidor', 500);
 
-            return res.status(200).json(userItems);
+            const userItems = await Media.getBase64File(userLoggedIn.uuid);
+
+            return res.status(200).json({photo: userItems });
 
         } catch(err: any) {
             res.status(err?.status ?? 500).json(err);
         }
         
     }
-
-    // public async getProfilePicture(req: RequestUser, res: Response) {
-
-    //     const { uuid } = req.params;
-
-    //     const photo = await Service.getProfilePicture(uuid);
-
-    //     res.writeHead(200, { 'Content-Type': 'image/png' });
-    //     return res.end(photo);
-
-    // }
 
     public async getProfile(req: Request, res: Response) {
         const {} = req as RequestUser;

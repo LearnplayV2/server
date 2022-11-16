@@ -10,7 +10,7 @@ import SocketController from './src/Controllers/socket';
 const app = express();
 
 const corsConfig = {
-    origin:  process.env.CLIENT_URL ? JSON.parse(process.env.CLIENT_URL) : '',
+    origin:  '*',
     optionsSuccessStatus: 200 
 }
 
