@@ -10,13 +10,13 @@ services:
     restart: always
     ports:
     - "${REDIS_PORT}:6379"
-  redis-insight: 
-    container_name: redis-client
-    image: redislabs/redisinsight:latest
-    ports:
-    - ${REDIS_PORT}0:8001
-    volumes:
-    - cache:/data
+  # redis-insight: 
+  #   container_name: redis-client
+  #   image: redislabs/redisinsight:latest
+  #   ports:
+  #   - ${REDIS_CLIENT}:8001
+  #   volumes:
+  #   - cache:/data
   database:
     container_name: database
     image: mysql:8.0

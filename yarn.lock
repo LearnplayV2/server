@@ -135,6 +135,40 @@
   resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-4.3.1.tgz#fb0ad69eded13827fb4cd81995a351c234e8327f"
   integrity sha512-4JF/uMaEDAPdcdZNOrnzE3BvrbGpjgV0FcPT3EVoi6I86fWkloqqxBt+KcK/+fIRR0Pxj66uGR9wVH8U1Y13JA==
 
+"@redis/bloom@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@redis/bloom/-/bloom-1.1.0.tgz#64e310ddee72010676e14296076329e594a1f6c7"
+  integrity sha512-9QovlxmpRtvxVbN0UBcv8WfdSMudNZZTFqCsnBszcQXqaZb/TVe30ScgGEO7u1EAIacTPAo7/oCYjYAxiHLanQ==
+
+"@redis/client@1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@redis/client/-/client-1.4.0.tgz#d2c56ce26c3e2fe3412db5cfb1814169662167eb"
+  integrity sha512-1gEj1AkyXPlkcC/9/T5xpDcQF8ntERURjLBgEWMTdUZqe181zfI9BY3jc2OzjTLkvZh5GV7VT4ktoJG2fV2ufw==
+  dependencies:
+    cluster-key-slot "1.1.1"
+    generic-pool "3.9.0"
+    yallist "4.0.0"
+
+"@redis/graph@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@redis/graph/-/graph-1.1.0.tgz#cc2b82e5141a29ada2cce7d267a6b74baa6dd519"
+  integrity sha512-16yZWngxyXPd+MJxeSr0dqh2AIOi8j9yXKcKCwVaKDbH3HTuETpDVPcLujhFYVPtYrngSco31BUcSa9TH31Gqg==
+
+"@redis/json@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@redis/json/-/json-1.0.4.tgz#f372b5f93324e6ffb7f16aadcbcb4e5c3d39bda1"
+  integrity sha512-LUZE2Gdrhg0Rx7AN+cZkb1e6HjoSKaeeW8rYnt89Tly13GBI5eP4CwDVr+MY8BAYfCg4/N15OUrtLoona9uSgw==
+
+"@redis/search@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@redis/search/-/search-1.1.0.tgz#7abb18d431f27ceafe6bcb4dd83a3fa67e9ab4df"
+  integrity sha512-NyFZEVnxIJEybpy+YskjgOJRNsfTYqaPbK/Buv6W2kmFNaRk85JiqjJZA5QkRmWvGbyQYwoO5QfDi2wHskKrQQ==
+
+"@redis/time-series@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@redis/time-series/-/time-series-1.0.4.tgz#af85eb080f6934580e4d3b58046026b6c2b18717"
+  integrity sha512-ThUIgo2U/g7cCuZavucQTQzA9g9JbDDY2f64u3AbAoz/8vE2lt2U37LamDUVChhaDA3IRT9R6VvJwqnUfTJzng==
+
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.npmjs.org/@sindresorhus/is/-/is-0.14.0.tgz"
@@ -243,6 +277,13 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
+"@types/ioredis@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-5.0.0.tgz#c1ea7e2f3e2c5a942a27cfee6f62ddcfb23fb3e7"
+  integrity sha512-zJbJ3FVE17CNl5KXzdeSPtdltc4tMT3TzC6fxQS0sQngkbFZ6h+0uTafsRqu+eSLIugf6Yb0Ea0SUuRr42Nk9g==
+  dependencies:
+    ioredis "*"
+
 "@types/json-schema@^7.0.7":
   version "7.0.11"
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.11.tgz"
@@ -291,6 +332,13 @@
   version "1.2.4"
   resolved "https://registry.npmjs.org/@types/range-parser/-/range-parser-1.2.4.tgz"
   integrity sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==
+
+"@types/redis@^4.0.11":
+  version "4.0.11"
+  resolved "https://registry.yarnpkg.com/@types/redis/-/redis-4.0.11.tgz#0bb4c11ac9900a21ad40d2a6768ec6aaf651c0e1"
+  integrity sha512-bI+gth8La8Wg/QCR1+V1fhrL9+LZUSWfcqpOj2Kc80ZQ4ffbdL173vQd5wovmoV9i071FU9oP2g6etLuEwb6Rg==
+  dependencies:
+    redis "*"
 
 "@types/serve-static@*":
   version "1.13.10"
@@ -760,6 +808,11 @@ clone-response@^1.0.2:
   integrity sha512-yjLXh88P599UOyPTFX0POsd7WxnbsVsGohcwzHOLspIhhpalPw1BcqED8NblyZLKcGrL8dTgMlcaZxV2jAD41Q==
   dependencies:
     mimic-response "^1.0.0"
+
+cluster-key-slot@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/cluster-key-slot/-/cluster-key-slot-1.1.1.tgz#10ccb9ded0729464b6d2e7d714b100a2d1259d43"
+  integrity sha512-rwHwUfXL40Chm1r08yrhU3qpUvdVlgkKNeyeGPOxnW8/SyVDvgRaed/Uz54AqWNaTCAThlj6QAs3TZcKI0xDEw==
 
 cluster-key-slot@^1.1.0:
   version "1.1.2"
@@ -1511,6 +1564,11 @@ generate-function@^2.3.1:
   dependencies:
     is-property "^1.0.2"
 
+generic-pool@3.9.0:
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/generic-pool/-/generic-pool-3.9.0.tgz#36f4a678e963f4fdb8707eab050823abc4e8f5e4"
+  integrity sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g==
+
 get-intrinsic@^1.0.2:
   version "1.1.1"
   resolved "https://registry.npmjs.org/get-intrinsic/-/get-intrinsic-1.1.1.tgz"
@@ -1800,7 +1858,7 @@ inquirer@^7.3.3:
     strip-ansi "^6.0.0"
     through "^2.3.6"
 
-ioredis@^5.2.4:
+ioredis@*, ioredis@^5.2.4:
   version "5.2.4"
   resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-5.2.4.tgz#9e262a668bc29bae98f2054c1e0d7efd86996b96"
   integrity sha512-qIpuAEt32lZJQ0XyrloCRdlEdUUNGG9i0UOk6zgzK6igyudNWqEBxfH6OlbnOOoBBvr1WB02mm8fR55CnikRng==
@@ -2764,6 +2822,18 @@ redis-parser@^3.0.0:
   dependencies:
     redis-errors "^1.0.0"
 
+redis@*, redis@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/redis/-/redis-4.5.0.tgz#8a461c8718e380ea899ba3711aa0bb217b112089"
+  integrity sha512-oZGAmOKG+RPnHo0UxM5GGjJ0dBd/Vi4fs3MYwM1p2baDoXC0wpm0yOdpxVS9K+0hM84ycdysp2eHg2xGoQ4FEw==
+  dependencies:
+    "@redis/bloom" "1.1.0"
+    "@redis/client" "1.4.0"
+    "@redis/graph" "1.1.0"
+    "@redis/json" "1.0.4"
+    "@redis/search" "1.1.0"
+    "@redis/time-series" "1.0.4"
+
 regexpp@^3.0.0, regexpp@^3.1.0:
   version "3.2.0"
   resolved "https://registry.npmjs.org/regexpp/-/regexpp-3.2.0.tgz"
@@ -3525,15 +3595,15 @@ xtend@^4.0.0:
   resolved "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
+yallist@4.0.0, yallist@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz"
+  integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
+
 yallist@^2.1.2:
   version "2.1.2"
   resolved "https://registry.npmjs.org/yallist/-/yallist-2.1.2.tgz"
   integrity sha1-HBH5IY8HYImkfdUS+TxmmaaoHVI=
-
-yallist@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz"
-  integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
 yargs-parser@^20.2.3:
   version "20.2.9"
