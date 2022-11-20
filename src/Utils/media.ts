@@ -34,7 +34,7 @@ class Media {
         return fileNewName;
     }
 
-    async getBase64File(fileTitle: string) : Promise<string> {
+    async getBase64File(fileTitle: string) : Promise<string | undefined> {
         console.log('get base64 file');
         let currentPath = `${this.path}/${fileTitle}`;
         if(this.fileExists(fileTitle)) {
@@ -52,7 +52,7 @@ class Media {
             }
         }
 
-        return this.getBase64File('404.jpg');
+        return undefined;
         
     }
 

@@ -18,15 +18,15 @@ class Controller {
     }
 
     public async create(req: Request, res: Response) {
-        const {userLoggedIn} = req as RequestUser;
-        const { title, visibility, description } = req.body;
         try {
+            const { title, visibility, description } = req.body;
+            const {userLoggedIn} = req as RequestUser;
 
             if(title.length > 31) throw RequestError('O título deve conter no máximo 31 caracteres');
             if(title.length < 4) throw RequestError('O título deve conter no mínimo 4 caracteres');
             if(description.length > 400) throw RequestError('A descrição deve conter no máximo 400 caracteres');
 
-            const request = await Model.create({
+            await Model.create({
                 title,
                 userId: userLoggedIn.uuid!,
                 visibility: visibility,
@@ -43,7 +43,7 @@ class Controller {
         const {userLoggedIn} = req as RequestUser;
         const { id } = req.params;
         try {
-            const request = await Model.delete({
+            await Model.delete({
                 id,
                 userId: userLoggedIn.uuid!,
             });

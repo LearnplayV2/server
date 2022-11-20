@@ -26,6 +26,4 @@ export default class RedisCache {
     public async delete(key: string) : Promise<void> {
      await this.client.del(key);   
     }
-
-    
 }
