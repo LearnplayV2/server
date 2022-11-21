@@ -31,6 +31,7 @@ app.use((req: any, res: Response, next: NextFunction) => {
 
 //* --- Basic Routes
 app.get('/', IndexController.greetings);
+app.get('/debug', IndexController.debug);
 app.use('/user', UserRoutes);
 app.use('/user', NotificationRoutes);
 app.use('/group', GroupRoutes);

@@ -3,13 +3,22 @@ import Service from '../Services/socket';
 import NotificationsModel from '../Models/notifications';
 import type { Socket } from "socket.io";
 
+export interface INotificationInput {
+    id: number,
+    title: string,
+    description?: string,
+}
+
 class Controller {
 
-    constructor(io : Server) {
-        io.on('connection', (socket : Socket) => { 
+    private socket : Server;
 
-            socket.on('test', (data: any) => {
-                console.log({event: 'test', data});
+    constructor(io : Server) {
+        this.socket = io;
+        io.on('connection', (socket : Socket) => { 
+            socket.on('broadcast', (data: any) => {
+                console.log('broadcast', {data});
+                this.emit('broadcast', data);
             });
 
             socket.on('newUser', (uuid: string) => {
@@ -26,13 +35,19 @@ class Controller {
             socket.on('makeAllNotificationsRead', async(data : {uuid : string}) => {
                 const receiver = Service.getUser(data.uuid);
                 const rows = await NotificationsModel.makeAllRead(data.uuid);
-                io.to(receiver?.socketId!).emit('allNotificationsRead', rows);
+                if(receiver?.socketId) {
+                    io.to(receiver.socketId).emit('allNotificationsRead', rows);
+                }
             })
             
             socket.on('disconnect', () => {
                 Service.removeUser(socket.id);
             });
         });
+    }
+
+    public emit(key: string, data: INotificationInput) {
+        this.socket.emit(key, data);
     }
 
 }
