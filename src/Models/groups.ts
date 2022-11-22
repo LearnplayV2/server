@@ -36,7 +36,11 @@ class Model {
             }
         });
 
-        const totalPages = Math.ceil(totalItems/limitPerPage);
+        const totalPages = query.length >= limitPerPage
+                                ? Math.ceil(totalItems/limitPerPage) 
+                                : query.length < limitPerPage 
+                                    ? 0 
+                                    : 1;
 
         return {
             page: page,
