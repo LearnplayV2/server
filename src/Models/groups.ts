@@ -6,9 +6,15 @@ const prisma = new PrismaClient();
 
 const limitPerPage = 4; 
 
+export interface ISearchGroup {
+    page: any;
+    title?: any;
+}
+
 class Model {
 
-    public async getAll({page} : {page: number}) {
+    public async getAll(props: ISearchGroup) {
+        const {page, title} = props;
 
         const totalItems = await prisma.groups.count({
             where: {
@@ -20,7 +26,10 @@ class Model {
             skip: (limitPerPage * (page - 1)),
             take: limitPerPage,
             where: {
-                visibility: 'PUBLIC'
+                visibility: 'PUBLIC',
+                title: {
+                    contains: title
+                }
             },
             orderBy: {
                 createdAt: 'desc'

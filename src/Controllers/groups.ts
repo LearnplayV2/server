@@ -3,13 +3,14 @@ import { RequestError } from 'request-error';
 import Model from '../Models/groups';
 import type { RequestGroup } from '../Types/groups';
 import type { RequestUser } from '../Types/user';
+import querystring from 'querystring';
 
 class Controller {
     public async getAll(req: Request, res: Response) {
-        const {params} = req as RequestGroup;
+        const {params, query} = req as RequestGroup;
         try {
             const page = parseInt(params.page);
-            const request = await Model.getAll({ page });
+            const request = await Model.getAll({ page, ...query });
 
             res.json(request);
         } catch (err: any) {
