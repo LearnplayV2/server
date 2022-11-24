@@ -1,5 +1,7 @@
 interface IPaginateProps {
-    totalItemsCount: number;
+    count: {
+        totalItems: number;
+    };
     limit: number;
     page: number;
 }
@@ -11,8 +13,9 @@ interface IPaginateReturn {
 }
 
 const paginate = (props: IPaginateProps) : IPaginateReturn => {
-    let { totalItemsCount, page, limit } = props;
-    const totalPages = Math.ceil(totalItemsCount / limit);
+    let { count, page, limit } = props;
+    const totalPages = Math.ceil(count.totalItems / limit);
+    
     const hasNextPage = page < totalPages;
 
     return {

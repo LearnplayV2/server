@@ -17,9 +17,16 @@ class Model {
     public async getAll(props: ISearchGroup) {
         const {page, title} = props;
 
+        const queryParams = {
+            title : {
+                contains: title
+            }
+        };
+
         const totalItems = await prisma.groups.count({
             where: {
-                visibility: 'PUBLIC'
+                visibility: 'PUBLIC',
+                ...queryParams
             }
         });
 
@@ -28,16 +35,14 @@ class Model {
             take: limitPerPage,
             where: {
                 visibility: 'PUBLIC',
-                title: {
-                    contains: title
-                }
+                ...queryParams
             },
             orderBy: {
                 createdAt: 'desc'
             }
         });
 
-        const pagination = paginate({limit: limitPerPage, page, totalItemsCount: totalItems});
+        const pagination = paginate({limit: limitPerPage, page, count: {totalItems}});
         
         return {
             ...pagination,
@@ -136,12 +141,10 @@ class Model {
             }
         });
 
-        const totalPages = Math.ceil(totalItems/limitPerPage);
+        const pagination = paginate({limit: limitPerPage, page: data.page, count: {totalItems}});
 
         return {
-            page: data.page,
-            totalPages,
-            hasNextPage: data.page < totalPages,
+            ...pagination,
             totalItems,
             groups: query
         };
