@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { RequestError } from "request-error";
 import type { GroupVisibility } from "../Types/groups";
+import {paginate} from '../Utils/pagination';
 
 const prisma = new PrismaClient();
 
@@ -36,16 +37,10 @@ class Model {
             }
         });
 
-        const totalPages = query.length >= limitPerPage
-                                ? Math.ceil(totalItems/limitPerPage) 
-                                : query.length < limitPerPage 
-                                    ? 0 
-                                    : 1;
-
+        const pagination = paginate({limit: limitPerPage, page, totalItemsCount: totalItems});
+        
         return {
-            page: page,
-            totalPages,
-            hasNextPage: page < totalPages,
+            ...pagination,
             totalItems,
             groups: query
         };
