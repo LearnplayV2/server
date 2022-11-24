@@ -1,15 +1,18 @@
 import type { Request, Response } from 'express';
 import { RequestError } from 'request-error';
-import Model from '../Models/groups';
-import type { RequestGroup } from '../Types/groups';
+import Model, { ISearchGroup } from '../Models/groups';
 import type { RequestUser } from '../Types/user';
 
 class Controller {
     public async getAll(req: Request, res: Response) {
-        const {params, query} = req as RequestGroup;
+        const {query : receivedQuery} = req;
         try {
-            const page = parseInt(params.page);
-            const request = await Model.getAll({ page, ...query });
+            let query = JSON.parse(JSON.stringify(receivedQuery));
+            query = {
+                ...query,
+                page: query?.page ? parseInt(query?.page) : 1,
+            } as ISearchGroup;
+            const request = await Model.getAll(query);
 
             res.json(request);
         } catch (err: any) {

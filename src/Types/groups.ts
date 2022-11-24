@@ -1,10 +1,6 @@
-import type { Request } from 'express';
-
-
-
-export interface RequestGroup extends Request  {
-    params: {
-        page: string,
+export interface RequestGroup  {
+    query: {
+        page: number,
         title?: string
     }
 }

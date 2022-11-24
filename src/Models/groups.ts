@@ -8,14 +8,16 @@ const prisma = new PrismaClient();
 const limitPerPage = 4; 
 
 export interface ISearchGroup {
-    page: any;
-    title?: any;
+    page: number;
+    title?: string;
 }
 
 class Model {
 
     public async getAll(props: ISearchGroup) {
         const {page, title} = props;
+
+        console.log('page', props)
 
         const queryParams = {
             title : {
