@@ -17,8 +17,6 @@ class Model {
     public async getAll(props: ISearchGroup) {
         const {page, title} = props;
 
-        console.log('page', props)
-
         const queryParams = {
             title : {
                 contains: title
@@ -49,7 +47,8 @@ class Model {
         return {
             ...pagination,
             totalItems,
-            groups: query
+            groups: query,
+            query: props
         };
     }
 
