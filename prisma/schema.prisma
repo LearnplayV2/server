@@ -54,6 +54,7 @@ model groups {
   visibility          group_status      @default(PUBLIC)
   staffs              group_staffs[] 
   members             group_members[]
+  links               group_links[]
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
 }
@@ -61,6 +62,14 @@ model groups {
 enum group_status {
   PUBLIC
   PRIVATE
+}
+
+model group_links {
+  id                  String            @id @default(uuid())
+  title               String            
+  url                 String          
+  groups              groups            @relation(fields: [groupId], references: [uuid])
+  groupId             String
 }
 
 model group_staffs {

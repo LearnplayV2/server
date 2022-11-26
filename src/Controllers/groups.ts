@@ -91,7 +91,12 @@ class Controller {
                         include: {
                             staff: true
                         }
+                    },
+                  links: {
+                    orderBy: {
+                        id: 'desc'
                     }
+                  }  
                 },
             });
 
