@@ -126,7 +126,7 @@ class Controller {
                 uuid: data?.uuid,
                 title: data?.title,
                 participation: {
-                    isMember,
+                    isMember: isMember || isStaff,
                     isStaff,
                 },
                 members: membersWithoutLoggedUser,

@@ -34,14 +34,12 @@ export default async function MemberProtectedRoute(req: Request, res: Response, 
         const isMember = data?.members?.some(member => member.userId === userLoggedIn.uuid);
         const isStaff = data?.staffs?.some(staff => staff.staffId === userLoggedIn.uuid);
         const isPrivate = data?.visibility == 'PRIVATE';
-        console.log({
-            isMember,
-            isStaff,
-            isPrivate
-        })
+
         if(!isStaff) {
             if(isPrivate && !isMember) {
                 return res.status(401).json({msg: 'Você não tem permissões pra fazer isso'});
+            } else {
+                return next();
             }
         } else {
             return next();
