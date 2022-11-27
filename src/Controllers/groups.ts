@@ -33,14 +33,17 @@ class Controller {
             if(title.length < 4) throw RequestError('O título deve conter no mínimo 4 caracteres');
             if(description.length > 400) throw RequestError('A descrição deve conter no máximo 400 caracteres');
 
-            await Model.create({
+            const data = await Model.create({
                 title,
                 userId: userLoggedIn.uuid!,
                 visibility: visibility,
                 description,
             });
 
-            res.json({ message: 'Grupo criado com sucesso!' });
+            //@ts-ignore
+            const groupId : any = data[0]?.uuid;
+
+            res.json({ message: 'Grupo criado com sucesso!', groupId });
         } catch (err: any) {
             res.status(err?.status ?? 500).json(err);
         }
