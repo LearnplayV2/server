@@ -73,6 +73,12 @@ class Controller {
         }
     }
 
+    async addLinks(req: Request, res: Response) {
+        const {userLoggedIn} = req as RequestUser;
+        const { id } = req.params;
+        
+    }
+
     async groupById(req: Request, res: Response) {
         const { id } = req.params;
         const {userLoggedIn} = req as RequestUser;
@@ -103,15 +109,6 @@ class Controller {
             // check if you are a member/staff of the group
             const isMember = data?.members?.some(member => member.userId === userLoggedIn.uuid);
             const isStaff = data?.staffs?.some(staff => staff.staffId === userLoggedIn.uuid);
-            const isPrivate = data?.visibility == 'PRIVATE';
-            console.log({
-                isMember,
-                isStaff,
-                isPrivate
-            })
-            if(!isStaff) {
-                if(isPrivate && !isMember) throw RequestError('Você não tem permissões pra fazer isso');
-            }
 
             let membersWithoutLoggedUser = data?.members?.filter(member => member.userId !== userLoggedIn.uuid);
             let staffWithoutLoggedUser = data?.staffs?.filter(staff => staff.staffId !== userLoggedIn.uuid);
