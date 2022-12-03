@@ -17,6 +17,9 @@ class Controller {
                 page: query?.page ? parseInt(query?.page) : 1,
             } as ISearchGroup;
             const request = await Model.getAll(query);
+            
+            console.log(request)
+            if(request.groups.length == 0) throw BasicError('Nenhum grupo foi criado ainda.', 404);
 
             res.json(request);
         } catch (err: any) {
@@ -157,14 +160,13 @@ class Controller {
                 delete s.staffId; delete s.groupId; s['user'] = s.staff; delete s.staff.email; delete s.staff.password; delete s.staff;
             });
 
+            const participation = isMember ? 'member' : isStaff ? 'staff' : undefined;
+
             const parsedData = {
                 ...data,
                 uuid: data?.uuid,
                 title: data?.title,
-                participation: {
-                    isMember,
-                    isStaff,
-                },
+                participation,
                 members: membersWithoutLoggedUser,
                 staffs: staffWithoutLoggedUser,
             };
@@ -204,6 +206,8 @@ class Controller {
                 }
             });
 
+            console.log(foundStaff)
+
             if(!foundMember) {
                 console.log('Entrou no grupo');
                 await model.group_members.create({
@@ -215,12 +219,12 @@ class Controller {
                 return res.status(200).send('Você entrou no grupo');
             } else if(foundStaff) {
                 console.log('Você é staff');
-                await model.groups.delete({
-                    where: {
-                        uuid: id
-                    }
-                });
-                return res.status(200).send('Você é staff');
+                // await model.groups.delete({
+                //     where: {
+                //         uuid: id
+                //     }
+                // });
+                return res.status(200).send('Grupo excluído');
             } else {
                 console.log('Saiu do grupo');
                 await model.group_members.delete({
