@@ -196,23 +196,23 @@ class Controller {
             });
 
             if(!foundMember) {
-                console.log('entrar')
                 await model.group_members.create({
                     data: {
                         groupId: id,
                         userId: userLoggedIn.uuid!
                     }
                 });
+                return res.status(200).send('Você entrou no grupo');
             } else {
-                console.log('sair')
                 await model.group_members.delete({
                     where: {
                         id: foundMember.id
                     }
                 });
+                
+                return res.status(200).send('Você saiu do grupo');
             }
 
-            res.status(200).end();
         } catch (err: any) {
             res.status(err?.status ?? 500).json(err);
         }
