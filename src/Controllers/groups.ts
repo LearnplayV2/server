@@ -159,7 +159,7 @@ class Controller {
                 uuid: data?.uuid,
                 title: data?.title,
                 participation: {
-                    isMember: isMember || isStaff,
+                    isMember: isMember,
                     isStaff,
                 },
                 members: membersWithoutLoggedUser,
@@ -187,7 +187,7 @@ class Controller {
                     uuid: id,                    
                 }
             });
-
+            
             const foundMember = await model.group_members.findFirst({
                 where: {
                     groupId: id,
@@ -195,7 +195,15 @@ class Controller {
                 }
             });
 
+            const foundStaff = await model.group_staffs.findFirst({
+                where: {
+                    groupId: id,
+                    staffId: userLoggedIn.uuid
+                }
+            });
+
             if(!foundMember) {
+                console.log('Entrou no grupo');
                 await model.group_members.create({
                     data: {
                         groupId: id,
@@ -203,13 +211,21 @@ class Controller {
                     }
                 });
                 return res.status(200).send('Você entrou no grupo');
+            } else if(foundStaff) {
+                console.log('Você é staff');
+                await model.groups.delete({
+                    where: {
+                        uuid: id
+                    }
+                });
+                return res.status(200).send('Você é staff');
             } else {
+                console.log('Saiu do grupo');
                 await model.group_members.delete({
                     where: {
                         id: foundMember.id
                     }
                 });
-                
                 return res.status(200).send('Você saiu do grupo');
             }
 

@@ -23,7 +23,7 @@ router.delete('/id/:id', ProtectedRoute, Controller.delete);
 // get my groups
 router.get('/my/page/:page/:filter?', ProtectedRoute, Controller.myGroups);
 
-// toggle join/exit grouo
+// toggle join/exit group or delete wheter is staff
 router.post('/joinOrExit', ProtectedRoute, Controller.joinOrExitGroup);
 
 export default router;
