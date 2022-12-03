@@ -45,7 +45,7 @@ model groups {
   title               String
   description         String?
   visibility          group_status      @default(PUBLIC)
-  staffs              group_staffs[] 
+  staffs              group_staffs[]    
   members             group_members[]
   links               group_links[]
   createdAt           DateTime          @default(now())
@@ -61,21 +61,21 @@ model group_links {
   id                  String            @id @default(uuid())
   title               String            
   url                 String          
-  groups              groups            @relation(fields: [groupId], references: [uuid])
+  groups              groups            @relation(fields: [groupId], references: [uuid], onDelete: Cascade)
   groupId             String
 }
 
 model group_staffs {
   id                  Int            @id @default(autoincrement())
-  groups              groups         @relation(fields: [groupId], references: [uuid])
+  groups              groups         @relation(fields: [groupId], references: [uuid], onDelete: Cascade)
   groupId             String
-  staff               user           @relation(fields: [staffId], references: [uuid]) 
+  staff               user           @relation(fields: [staffId], references: [uuid], onDelete: Cascade) 
   staffId             String
 }
 
 model group_members {
   id                  Int            @id @default(autoincrement())
-  groups              groups         @relation(fields: [groupId], references: [uuid])
+  groups              groups         @relation(fields: [groupId], references: [uuid], onDelete: Cascade)
   groupId             String
   user                user           @relation(fields: [userId], references: [uuid]) 
   userId              String

@@ -139,6 +139,8 @@ class Controller {
                 },
             });
 
+            if(!data) throw BasicError('Esse grupo não existe ou foi excluído.', 404);
+
             // check if you are a member/staff of the group
             const isMember = data?.members?.some(member => member.userId === userLoggedIn.uuid);
             const isStaff = data?.staffs?.some(staff => staff.staffId === userLoggedIn.uuid);
@@ -156,15 +158,15 @@ class Controller {
             });
 
             const parsedData = {
+                ...data,
                 uuid: data?.uuid,
                 title: data?.title,
                 participation: {
-                    isMember: isMember,
+                    isMember,
                     isStaff,
                 },
                 members: membersWithoutLoggedUser,
                 staffs: staffWithoutLoggedUser,
-                ...data
             };
 
             res.json(parsedData);
