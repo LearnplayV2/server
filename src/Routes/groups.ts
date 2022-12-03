@@ -11,8 +11,8 @@ router.get('/', ProtectedRoute, Controller.getAll);
 // get group by id
 router.get('/:id', [ProtectedRoute, MemberProtectedRoute], Controller.groupById);
 
-// add link into grupo
-router.post('/add/link', [ProtectedRoute, StaffProtectedRoute], Controller.addLinks);
+// add/update link into grupo
+router.post('/set/links', [ProtectedRoute, StaffProtectedRoute], Controller.setLinks);
 
 // create new group
 router.post('/new', ProtectedRoute, Controller.create);
@@ -22,5 +22,8 @@ router.delete('/id/:id', ProtectedRoute, Controller.delete);
 
 // get my groups
 router.get('/my/page/:page/:filter?', ProtectedRoute, Controller.myGroups);
+
+// toggle join/exit grouo
+router.post('/joinOrExit', ProtectedRoute, Controller.joinOrExitGroup);
 
 export default router;

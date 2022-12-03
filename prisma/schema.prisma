@@ -19,7 +19,6 @@ model user {
   status              user_status           @default(ACTIVE)
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
-  user_items          user_items?
   notifications       notifications[]
   group_member        group_members[]
   groups_staff        group_staffs[]
@@ -28,12 +27,6 @@ model user {
 enum user_status {
   ACTIVE
   INACTIVE
-}
-
-model user_items {
-  uuid      String     @id @default(uuid())
-  user      user       @relation(fields: [userId], references: [uuid])
-  userId    String     @unique
 }
 
 model notifications {

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import type { Request, Response } from 'express';
 import { RequestError } from 'request-error';
 import Model, { ISearchGroup } from '../Models/groups';
@@ -76,10 +76,40 @@ class Controller {
         }
     }
 
-    async addLinks(req: Request, res: Response) {
+    async setLinks(req: Request, res: Response) {
         const {userLoggedIn} = req as RequestUser;
-        const { id } = req.params;
-        
+        const { id } = req.query;
+        try {
+            const {title, url} = req.body as Prisma.group_linksCreateInput;
+            
+            if(id) {
+                if(!title) throw RequestError('O título é obrigatório');
+                if(!url) throw RequestError('A url é obrigatória');
+                await model.group_links.upsert({
+                    where: {
+                        id: id.toString()
+                    },
+                    create: {
+                        title, 
+                        url, 
+                        groupId: id.toString()
+                    },
+                    update: {
+                        title,
+                        url: url
+                    }
+                });
+
+            } else {
+                throw BasicError('Informe o id do grupo como query', 422);
+            }
+            
+            res.status(201).end();
+
+        } catch(err: any) {
+            console.log(err)
+            res.status(err?.status ?? 500).json(err);
+        }        
     }
 
     async groupById(req: Request, res: Response) {
@@ -138,6 +168,51 @@ class Controller {
             };
 
             res.json(parsedData);
+        } catch (err: any) {
+            res.status(err?.status ?? 500).json(err);
+        }
+
+    }
+
+    async joinOrExitGroup(req: Request, res: Response) {
+        try {
+            const {userLoggedIn} = req as RequestUser;
+            const { id } = req.body;
+            if(typeof id == 'undefined') throw BasicError('Informe o id do grupo', 422);
+            if(typeof userLoggedIn == 'undefined') throw BasicError('Usuário não conectado', 401);
+
+            // found group or throw error
+            await model.groups.findUniqueOrThrow({
+                where: {
+                    uuid: id,                    
+                }
+            });
+
+            const foundMember = await model.group_members.findFirst({
+                where: {
+                    groupId: id,
+                    userId: userLoggedIn.uuid
+                }
+            });
+
+            if(!foundMember) {
+                console.log('entrar')
+                await model.group_members.create({
+                    data: {
+                        groupId: id,
+                        userId: userLoggedIn.uuid!
+                    }
+                });
+            } else {
+                console.log('sair')
+                await model.group_members.delete({
+                    where: {
+                        id: foundMember.id
+                    }
+                });
+            }
+
+            res.status(200).end();
         } catch (err: any) {
             res.status(err?.status ?? 500).json(err);
         }
