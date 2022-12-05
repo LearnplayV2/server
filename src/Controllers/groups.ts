@@ -208,7 +208,7 @@ class Controller {
 
             console.log(foundStaff)
 
-            if(!foundMember) {
+            if(!foundMember && !foundStaff) {
                 console.log('Entrou no grupo');
                 await model.group_members.create({
                     data: {
@@ -219,13 +219,13 @@ class Controller {
                 return res.status(200).send('Você entrou no grupo');
             } else if(foundStaff) {
                 console.log('Você é staff');
-                // await model.groups.delete({
-                //     where: {
-                //         uuid: id
-                //     }
-                // });
+                await model.groups.delete({
+                    where: {
+                        uuid: id
+                    }
+                });
                 return res.status(200).send('Grupo excluído');
-            } else {
+            } else if(foundMember) {
                 console.log('Saiu do grupo');
                 await model.group_members.delete({
                     where: {
