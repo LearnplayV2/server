@@ -5,7 +5,7 @@ import Model, { ISearchGroup } from '../Models/groups';
 import type { RequestUser } from '../Types/user';
 import {BasicError} from '../Utils/basicError';
 
-const model = new PrismaClient();
+const model = new PrismaClient({log: ['query']});
 
 class Controller {
     async getAll(req: Request, res: Response) {
@@ -83,31 +83,37 @@ class Controller {
         const {userLoggedIn} = req as RequestUser;
         const { id } = req.query;
         try {
-            const {title, url} = req.body as Prisma.group_linksCreateInput;
-            
             if(id) {
-                if(!title) throw RequestError('O título é obrigatório');
-                if(!url) throw RequestError('A url é obrigatória');
-                await model.group_links.upsert({
+                const links = req.body as Prisma.group_linksCreateInput[];
+                const validate = !links.some(link => (link.title === '' || link.url === '' || typeof link.title === 'undefined' || typeof link.url === 'undefined'));
+                if(!validate) throw BasicError('O título e o link não podem ser nulos', 422);
+
+
+                const query = await model.groups.update({
                     where: {
-                        id: id.toString()
+                        uuid: id.toString()
                     },
-                    create: {
-                        title, 
-                        url, 
-                        groupId: id.toString()
+                    data: {
+                        links: {
+                            upsert: links.map((link, i) => ({
+                                where: {
+                                    id: i.toString()
+                                },
+                                create: link,
+                                update: link,
+                            }))
+                        }
                     },
-                    update: {
-                        title,
-                        url: url
+                    select: {
+                        links: true
                     }
                 });
+
+                res.status(201).json(query);
 
             } else {
                 throw BasicError('Informe o id do grupo como query', 422);
             }
-            
-            res.status(201).end();
 
         } catch(err: any) {
             console.log(err)
