@@ -88,28 +88,25 @@ class Controller {
                 const validate = !links.some(link => (link.title === '' || link.url === '' || typeof link.title === 'undefined' || typeof link.url === 'undefined'));
                 if(!validate) throw BasicError('O título e o link não podem ser nulos', 422);
 
-
-                const query = await model.groups.update({
-                    where: {
-                        uuid: id.toString()
-                    },
-                    data: {
-                        links: {
-                            upsert: links.map((link, i) => ({
-                                where: {
-                                    id: i.toString()
-                                },
-                                create: link,
-                                update: link,
-                            }))
-                        }
-                    },
-                    select: {
-                        links: true
+                const data = links.map(link => {
+                    return {
+                        groupId: id.toString(),
+                        title: link.title,
+                        url: link.url,
                     }
                 });
 
-                res.status(201).json(query);
+                const [_, _a, query] = await Promise.all([
+                    await model.group_links.deleteMany({
+                        where: {
+                            groupId: id.toString()
+                        }
+                    }),
+                    await model.group_links.createMany({data }),
+                    await model.group_links.findMany({where: {groupId: id.toString() } })
+                ]);
+                
+                return res.status(201).json(query);
 
             } else {
                 throw BasicError('Informe o id do grupo como query', 422);
