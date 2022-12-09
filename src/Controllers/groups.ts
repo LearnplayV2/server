@@ -4,6 +4,7 @@ import { RequestError } from 'request-error';
 import Model, { ISearchGroup } from '../Models/groups';
 import type { RequestUser } from '../Types/user';
 import {BasicError} from '../Utils/basicError';
+import xOR from '../Utils/xor';
 
 const model = new PrismaClient({log: ['query']});
 
@@ -84,7 +85,9 @@ class Controller {
         try {
             const { id } = req.query;
             const {title, description } = req.body as any;
-            if(!title || !description) throw BasicError('Informe o título e a descrição do grupo', 422);
+
+            console.log(req.body)
+            if(!title) throw BasicError('Informe o título do grupo', 422);
             if(!id) throw BasicError('Informe o id do grupo', 422);
 
             await model.groups.update({
