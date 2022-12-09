@@ -8,6 +8,7 @@ import {BasicError} from '../Utils/basicError';
 const model = new PrismaClient({log: ['query']});
 
 class Controller {
+
     async getAll(req: Request, res: Response) {
         const {query : receivedQuery} = req;
         try {
@@ -79,10 +80,33 @@ class Controller {
         }
     }
 
-    async setLinks(req: Request, res: Response) {
-        const {userLoggedIn} = req as RequestUser;
-        const { id } = req.query;
+    async updateConfig(req: Request, res: Response) {
         try {
+            const { id } = req.query;
+            const {title, description } = req.body as any;
+            if(!title || !description) throw BasicError('Informe o título e a descrição do grupo', 422);
+            if(!id) throw BasicError('Informe o id do grupo', 422);
+
+            await model.groups.update({
+                where: {
+                    uuid: id.toString(),
+                },
+                data: {
+                    title,
+                    description
+                }
+            });
+            
+            res.status(202).end();
+        } catch (err: any) {
+            console.log(err)
+            res.status(err?.status ?? 500).json(err);
+        }
+    }
+
+    async updateLinks(req: Request, res: Response) {
+        try {
+            const { id } = req.query;
             if(id) {
                 const links = req.body as Prisma.group_linksCreateInput[];
                 const validate = !links.some(link => (link.title === '' || link.url === '' || typeof link.title === 'undefined' || typeof link.url === 'undefined'));
