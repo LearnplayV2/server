@@ -1,10 +1,10 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import type { Request, Response } from 'express';
 import { RequestError } from 'request-error';
+import Participation from '../class/participation';
 import Model, { ISearchGroup } from '../Models/groups';
 import type { RequestUser } from '../Types/user';
 import {BasicError} from '../Utils/basicError';
-import xOR from '../Utils/xor';
 
 const model = new PrismaClient({log: ['query']});
 
@@ -20,7 +20,6 @@ class Controller {
             } as ISearchGroup;
             const request = await Model.getAll(query);
             
-            console.log(request)
             if(request.groups.length == 0) throw BasicError('Nenhum grupo foi criado ainda.', 404);
 
             res.json(request);
@@ -145,7 +144,7 @@ class Controller {
         }        
     }
 
-    async groupById(req: Request, res: Response) {
+    async getById(req: Request, res: Response) {
         const { id } = req.params;
         const {userLoggedIn} = req as RequestUser;
         try {
@@ -190,7 +189,7 @@ class Controller {
                 delete s.staffId; delete s.groupId; s['user'] = s.staff; delete s.staff.email; delete s.staff.password; delete s.staff;
             });
 
-            const participation = isMember ? 'member' : isStaff ? 'staff' : undefined;
+            const participation = isMember ? Participation.member : isStaff ? Participation.staff : undefined;
 
             const parsedData = {
                 ...data,
@@ -236,10 +235,7 @@ class Controller {
                 }
             });
 
-            console.log(foundStaff)
-
             if(!foundMember && !foundStaff) {
-                console.log('Entrou no grupo');
                 await model.group_members.create({
                     data: {
                         groupId: id,
@@ -248,7 +244,6 @@ class Controller {
                 });
                 return res.status(200).send('Você entrou no grupo');
             } else if(foundStaff) {
-                console.log('Você é staff');
                 await model.groups.delete({
                     where: {
                         uuid: id
@@ -256,7 +251,6 @@ class Controller {
                 });
                 return res.status(200).send('Grupo excluído');
             } else if(foundMember) {
-                console.log('Saiu do grupo');
                 await model.group_members.delete({
                     where: {
                         id: foundMember.id
