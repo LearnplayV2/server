@@ -71,6 +71,8 @@ model group_staffs {
   groupId             String
   staff               user           @relation(fields: [staffId], references: [uuid], onDelete: Cascade) 
   staffId             String
+  posts               group_posts[]
+  comments            group_posts_comments[]
 }
 
 model group_members {
@@ -79,4 +81,27 @@ model group_members {
   groupId             String
   user                user           @relation(fields: [userId], references: [uuid]) 
   userId              String
+  posts               group_posts[]
+  comments            group_posts_comments[]
+}
+
+model group_posts {
+  id                   String                  @id @default(uuid())
+  member               group_members           @relation(fields: [memberId], references: [id], onDelete:Cascade, onUpdate: Cascade)
+  memberId             Int
+  staff                group_staffs            @relation(fields: [staffId], references: [id], onDelete:Cascade, onUpdate: Cascade)
+  staffId              Int
+  content              String                  @db.Text
+  comments             group_posts_comments[]
+}
+
+model group_posts_comments {
+  id                   String                  @id @default(uuid())
+  post                 group_posts             @relation(fields: [postId], references: [id], onDelete:Cascade, onUpdate: Cascade)
+  postId               String
+  member               group_members           @relation(fields: [memberId], references: [id], onDelete:Cascade, onUpdate: Cascade)
+  memberId             Int
+  staff                group_staffs            @relation(fields: [staffId], references: [id], onDelete:Cascade, onUpdate: Cascade)
+  staffId              Int         
+  content              String                  @db.Text
 }
