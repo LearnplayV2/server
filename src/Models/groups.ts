@@ -1,10 +1,10 @@
 import { member_type, PrismaClient } from "@prisma/client";
 import { RequestError } from "request-error";
 import type { GroupVisibility } from "../Types/groups";
-import { BasicError } from "../Utils/basicError";
+import DBUtils from "../Utils/dbUtils";
 import {paginate} from '../Utils/pagination';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({log: ['query']});
 
 const limitPerPage = 4; 
 
@@ -16,11 +16,11 @@ export interface ISearchGroup {
 class Model {
 
     public async getAll(props: ISearchGroup) {
-        const {page, title} = props;
+        let {page, title} = props;
 
         const queryParams = {
             title : {
-                contains: title
+                contains: DBUtils.mysqlEscape(title ?? '')
             }
         };
 
