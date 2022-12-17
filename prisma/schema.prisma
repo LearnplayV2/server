@@ -64,7 +64,7 @@ model group_links {
 }
 
 model group_members {
-  id                  Int                      @id @default(autoincrement())
+  id                  String                   @id @default(uuid())
   groups              groups                   @relation(fields: [groupId], references: [uuid], onDelete: Cascade)
   groupId             String
   user                user                     @relation(fields: [userId], references: [uuid], onDelete: Cascade) 
@@ -82,7 +82,7 @@ enum member_type {
 model group_posts {
   id                   String                  @id @default(uuid())
   member               group_members           @relation(fields: [memberId], references: [id], onDelete:Cascade, onUpdate: Cascade)
-  memberId             Int
+  memberId             String
   content              String                  @db.Text
   comments             group_posts_comments[]
 }
@@ -92,6 +92,6 @@ model group_posts_comments {
   post                 group_posts             @relation(fields: [postId], references: [id], onDelete:Cascade, onUpdate: Cascade)
   postId               String
   member               group_members           @relation(fields: [memberId], references: [id], onDelete:Cascade, onUpdate: Cascade)
-  memberId             Int
+  memberId             String
   content              String                  @db.Text
 }

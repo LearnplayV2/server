@@ -21,7 +21,7 @@ class GroupController {
             } as ISearchGroup;
             const request = await Model.getAll(query);
             
-            if(request.groups.length == 0) throw BasicError('Nenhum grupo foi criado ainda.', 404);
+            if(request.groups.length == 0) throw BasicError('Nenhum grupo foi encontrado.', 404);
 
             res.json(request);
         } catch (err: any) {

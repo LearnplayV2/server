@@ -1,6 +1,7 @@
 import { member_type, PrismaClient } from "@prisma/client";
 import { RequestError } from "request-error";
 import type { GroupVisibility } from "../Types/groups";
+import { BasicError } from "../Utils/basicError";
 import {paginate} from '../Utils/pagination';
 
 const prisma = new PrismaClient();
@@ -101,6 +102,7 @@ class Model {
     } 
     
     public async myGroups(data: {userId: string, page: number, filter?: string}) {
+
         const totalItems = await prisma.groups.count({
             where: {
                 title: {

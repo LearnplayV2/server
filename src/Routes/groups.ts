@@ -14,8 +14,6 @@ router.get('/', ProtectedRoute, GroupController.index);
 // get group by id
 router.get('/id/:id', [ProtectedRoute, MemberProtectedRoute], GroupController.show);
 
-// add/update link into grupo
-router.post('/set/links', [ProtectedRoute, StaffProtectedRoute], GroupLinksController.update);
 
 // create new group
 router.post('/new', ProtectedRoute, GroupController.create);
@@ -28,11 +26,24 @@ router.get('/my/page/:page/:filter?', ProtectedRoute, GroupController.showByFilt
 
 // toggle join/exit group or delete wheter is staff
 router.post('/joinOrExit', ProtectedRoute, GroupController.joinOrExitGroup);
+//* ------------------------------- LINKS CONTROLLER
+
+// add/update link into grupo
+router.post('/set/links', [ProtectedRoute, StaffProtectedRoute], GroupLinksController.update);
+
+//* ------------------------------- CONFIG CONTROLLER
 
 // set group basic config
 router.put('/updateConfig', [ProtectedRoute, StaffProtectedRoute], GroupConfigController.update);
 
+//* ------------------------------- POSTS CONTROLLER
+
 // get group posts
-router.get('/posts', [ProtectedRoute, MemberProtectedRoute], GroupPostsController.index);
+router.get('/posts/:id', [ProtectedRoute, MemberProtectedRoute], GroupPostsController.index);
+
+// add new post
+router.post('/posts/:id', [ProtectedRoute, MemberProtectedRoute], GroupPostsController.create);
+
+
 
 export default router;
