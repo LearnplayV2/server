@@ -5,6 +5,7 @@ import Participation from '../../class/participation';
 import Model, { ISearchGroup } from '../../Models/groups';
 import type { RequestUser } from '../../Types/user';
 import {BasicError} from '../../Utils/basicError';
+import prisma_user_selection from '../../Utils/prismaUserSelection';
 
 const model = new PrismaClient({log: ['query']});
 
@@ -84,7 +85,10 @@ class GroupController {
     async show(req: Request, res: Response) {
         const { id } = req.params;
         const {userLoggedIn} = req as RequestUser;
+        
         try {
+
+            
             const data = await model.groups.findUnique({
                 where: {
                     uuid: id,
@@ -92,8 +96,10 @@ class GroupController {
                 include: {
                     members: {
                         include: {
-                            user: true,
-                        }
+                            user: {
+                                select: prisma_user_selection({avoid: ['password', 'status', 'email']})
+                            },
+                        },
                     },
                   links: {
                     orderBy: {
@@ -103,19 +109,11 @@ class GroupController {
                 },
             });
 
-            if(!data) throw BasicError('Esse grupo não existe ou foi excluído.', 404);
 
+            if(!data) throw BasicError('Esse grupo não existe ou foi excluído.', 404);
+            
             let membersWithoutLoggedUser = data?.members?.filter(member => member.userId !== userLoggedIn.uuid && member.type === member_type.MEMBER);
             let staffWithoutLoggedUser = data?.members?.filter(member => member.userId !== userLoggedIn.uuid  && member.type === member_type.STAFF);
-            // rename staff to user and delete unnecessary data
-            membersWithoutLoggedUser?.map(m => {
-                 // @ts-expect-error
-                 delete m.groupId; delete m.userId; delete m.user.password; delete m.user.email;
-            });
-            staffWithoutLoggedUser?.map(s => {
-                // @ts-expect-error
-                delete s.staffId; delete s.groupId; s['user'] = s.staff; delete s.staff.email; delete s.staff.password; delete s.staff;
-            });
 
             const participation = data.members.find(member => member.userId === userLoggedIn.uuid)?.type;
 

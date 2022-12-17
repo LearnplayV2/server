@@ -12,7 +12,7 @@ const router = Router();
 router.get('/', ProtectedRoute, GroupController.index);
 
 // get group by id
-router.get('/:id', [ProtectedRoute, MemberProtectedRoute], GroupController.show);
+router.get('/id/:id', [ProtectedRoute, MemberProtectedRoute], GroupController.show);
 
 // add/update link into grupo
 router.post('/set/links', [ProtectedRoute, StaffProtectedRoute], GroupLinksController.update);

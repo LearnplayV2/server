@@ -8,27 +8,22 @@ const model = new PrismaClient({log: ['query']});
 class GroupPostsController {
 
     static async index(req: Request, res: Response) {
+        console.log('hello world')
         try {
             const {id} = req.query;
-            const {content} = req.body;
             const {userLoggedIn} = req as RequestUser;
 
             if(!id) throw BasicError('Informe o id do grupo', 422);
-            if(!content) throw BasicError('Informe o conteúdo do post', 422);
-            // todo
-            // if(!)
 
-            // await model.group_posts.create({
-            //     where: {
-            //         id: id.toString()
-            //     },
-            //     data: {
+            const data = await model.group_posts.findMany({
+                where: {
+                    id: id.toString()
+                },
+            });
 
-            //         content,
+            if(!data) throw BasicError('Nenhum post foi encontrado', 204);
 
-            //     }
-            // });
-
+            return res.json(data);
             
         } catch(err: any) {
             res.status(err?.status ?? 500).json(err);
