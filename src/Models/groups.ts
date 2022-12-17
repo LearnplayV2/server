@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { member_type, PrismaClient } from "@prisma/client";
 import { RequestError } from "request-error";
 import type { GroupVisibility } from "../Types/groups";
 import {paginate} from '../Utils/pagination';
@@ -62,25 +62,27 @@ class Model {
             }
         });
         
-        const staff = await prisma.group_staffs.create({
+        const member = await prisma.group_members.create({
             data: {
                 groupId: group.uuid,
-                staffId: data.userId
+                userId: data.userId,
+                type: member_type.STAFF
             }
          });
 
-        return [group, staff];
+        return [group, member];
     }
 
     public async delete(data: {id: string, userId: string}) {
         try {
 
-            const find_staff = await prisma.group_staffs.findFirst({
+            const find_staff = await prisma.group_members.findFirst({
                 where: {
                     groupId: data.id,
                     AND: {
-                        staffId: data.userId
-                    }
+                        userId: data.userId,
+                    },
+                    type: member_type.STAFF
                 }
             });
     
@@ -89,7 +91,6 @@ class Model {
             // then delete groups and relations
             Promise.all([
                 prisma.group_members.deleteMany({ where: { groupId: data.id } }),
-                prisma.group_staffs.deleteMany({where: {groupId: data.id}}),
                 prisma.groups.delete({where: {uuid: data.id}})
             ]);
             
@@ -105,9 +106,9 @@ class Model {
                 title: {
                     contains: data.filter
                 },
-                staffs: {
+                members: {
                     some: {
-                        staffId: data.userId
+                        userId: data.userId
                     }
                 }
             }
@@ -122,22 +123,6 @@ class Model {
             where: {
                 title: {
                     contains: data.filter
-                },
-                staffs: {
-                    some: {
-                        staffId: data.userId
-                    }
-                }
-            },
-            include: {
-                staffs: {
-                    include: {
-                        staff: {
-                            select: {
-                                name: true,
-                            }
-                        }
-                    },
                 }
             }
         });

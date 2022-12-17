@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { member_type, PrismaClient } from "@prisma/client";
 import type { RequestUser } from '../../Types/user';
 import type { NextFunction, Request, Response } from "express";
 
@@ -10,10 +10,11 @@ export default async function StaffProtectedRoute(req: Request, res: Response, n
     const { id } = req.query;
     
     if(id) {
-        const query = await prisma.group_staffs.findFirst({
+        const query = await prisma.group_members.findFirst({
             where: {
                 groupId: id.toString(),
-                staffId: userLoggedIn.uuid,
+                userId: userLoggedIn.uuid,
+                type: member_type.STAFF
             }
         });
         

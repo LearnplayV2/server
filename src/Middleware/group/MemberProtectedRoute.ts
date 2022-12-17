@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { member_type, PrismaClient } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
 import type { RequestUser } from '../../Types/user';
 
@@ -9,8 +9,6 @@ export default async function MemberProtectedRoute(req: Request, res: Response, 
     const {userLoggedIn} = req as RequestUser;
     const { id } = req.params;
 
-    console.log('id', id)
-    
     if(id) {
         const data = await prisma.groups.findUnique({
             where: {
@@ -21,18 +19,17 @@ export default async function MemberProtectedRoute(req: Request, res: Response, 
                     include: {
                         user: true,
                     }
-                },
-                staffs: {
-                    include: {
-                        staff: true
-                    }
                 }
             },
         });
 
         // check if you are a member/staff of the group
-        const isMember = data?.members?.some(member => member.userId === userLoggedIn.uuid);
-        const isStaff = data?.staffs?.some(staff => staff.staffId === userLoggedIn.uuid);
+        const isMember = data?.members?.some(member => {
+            return member.userId === userLoggedIn.uuid && member.type == member_type.MEMBER;
+        });
+        const isStaff = data?.members?.some(member => {
+            return member.userId === userLoggedIn.uuid && member.type == member_type.STAFF;
+        });
         const isPrivate = data?.visibility == 'PRIVATE';
 
         if(!isStaff) {

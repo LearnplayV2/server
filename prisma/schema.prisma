@@ -21,7 +21,6 @@ model user {
   updatedAt           DateTime              @updatedAt
   notifications       notifications[]
   group_member        group_members[]
-  groups_staff        group_staffs[]
 }
 
 enum user_status {
@@ -45,7 +44,6 @@ model groups {
   title               String
   description         String?
   visibility          group_status      @default(PUBLIC)
-  staffs              group_staffs[]    
   members             group_members[]
   links               group_links[]
   createdAt           DateTime          @default(now())
@@ -65,32 +63,26 @@ model group_links {
   groupId             String
 }
 
-model group_staffs {
-  id                  Int            @id @default(autoincrement())
-  groups              groups         @relation(fields: [groupId], references: [uuid], onDelete: Cascade)
-  groupId             String
-  staff               user           @relation(fields: [staffId], references: [uuid], onDelete: Cascade) 
-  staffId             String
-  posts               group_posts[]
-  comments            group_posts_comments[]
-}
-
 model group_members {
-  id                  Int            @id @default(autoincrement())
-  groups              groups         @relation(fields: [groupId], references: [uuid], onDelete: Cascade)
+  id                  Int                      @id @default(autoincrement())
+  groups              groups                   @relation(fields: [groupId], references: [uuid], onDelete: Cascade)
   groupId             String
-  user                user           @relation(fields: [userId], references: [uuid]) 
+  user                user                     @relation(fields: [userId], references: [uuid], onDelete: Cascade) 
   userId              String
   posts               group_posts[]
   comments            group_posts_comments[]
+  type                member_type              @default(MEMBER)
+}
+
+enum member_type {
+  STAFF
+  MEMBER
 }
 
 model group_posts {
   id                   String                  @id @default(uuid())
   member               group_members           @relation(fields: [memberId], references: [id], onDelete:Cascade, onUpdate: Cascade)
   memberId             Int
-  staff                group_staffs            @relation(fields: [staffId], references: [id], onDelete:Cascade, onUpdate: Cascade)
-  staffId              Int
   content              String                  @db.Text
   comments             group_posts_comments[]
 }
@@ -101,7 +93,5 @@ model group_posts_comments {
   postId               String
   member               group_members           @relation(fields: [memberId], references: [id], onDelete:Cascade, onUpdate: Cascade)
   memberId             Int
-  staff                group_staffs            @relation(fields: [staffId], references: [id], onDelete:Cascade, onUpdate: Cascade)
-  staffId              Int         
   content              String                  @db.Text
 }

@@ -1,16 +1,16 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { member_type, Prisma, PrismaClient } from '@prisma/client';
 import type { Request, Response } from 'express';
 import { RequestError } from 'request-error';
-import Participation from '../class/participation';
-import Model, { ISearchGroup } from '../Models/groups';
-import type { RequestUser } from '../Types/user';
-import {BasicError} from '../Utils/basicError';
+import Participation from '../../class/participation';
+import Model, { ISearchGroup } from '../../Models/groups';
+import type { RequestUser } from '../../Types/user';
+import {BasicError} from '../../Utils/basicError';
 
 const model = new PrismaClient({log: ['query']});
 
-class Controller {
+class GroupController {
 
-    async getAll(req: Request, res: Response) {
+    async index(req: Request, res: Response) {
         const {query : receivedQuery} = req;
         try {
             let query = JSON.parse(JSON.stringify(receivedQuery));
@@ -68,7 +68,7 @@ class Controller {
         }
     }
 
-    async myGroups(req: Request, res: Response) {
+    async showByFilter(req: Request, res: Response) {
         const {userLoggedIn} = req as RequestUser;
         try {
             const page = parseInt(req.params.page);
@@ -80,71 +80,8 @@ class Controller {
         }
     }
 
-    async updateConfig(req: Request, res: Response) {
-        try {
-            const { id } = req.query;
-            const {title, description } = req.body as any;
-
-            console.log(req.body)
-            if(!title) throw BasicError('Informe o título do grupo', 422);
-            if(!id) throw BasicError('Informe o id do grupo', 422);
-
-            await model.groups.update({
-                where: {
-                    uuid: id.toString(),
-                },
-                data: {
-                    title,
-                    description
-                }
-            });
-            
-            res.status(202).end();
-        } catch (err: any) {
-            console.log(err)
-            res.status(err?.status ?? 500).json(err);
-        }
-    }
-
-    async updateLinks(req: Request, res: Response) {
-        try {
-            const { id } = req.query;
-            if(id) {
-                const links = req.body as Prisma.group_linksCreateInput[];
-                const validate = !links.some(link => (link.title === '' || link.url === '' || typeof link.title === 'undefined' || typeof link.url === 'undefined'));
-                if(!validate) throw BasicError('O título e o link não podem ser nulos', 422);
-
-                const data = links.map(link => {
-                    return {
-                        groupId: id.toString(),
-                        title: link.title,
-                        url: link.url,
-                    }
-                });
-
-                const [_, _a, query] = await Promise.all([
-                    await model.group_links.deleteMany({
-                        where: {
-                            groupId: id.toString()
-                        }
-                    }),
-                    await model.group_links.createMany({data }),
-                    await model.group_links.findMany({where: {groupId: id.toString() } })
-                ]);
-                
-                return res.status(201).json(query);
-
-            } else {
-                throw BasicError('Informe o id do grupo como query', 422);
-            }
-
-        } catch(err: any) {
-            console.log(err)
-            res.status(err?.status ?? 500).json(err);
-        }        
-    }
-
-    async getById(req: Request, res: Response) {
+    
+    async show(req: Request, res: Response) {
         const { id } = req.params;
         const {userLoggedIn} = req as RequestUser;
         try {
@@ -158,11 +95,6 @@ class Controller {
                             user: true,
                         }
                     },
-                    staffs: {
-                        include: {
-                            staff: true
-                        }
-                    },
                   links: {
                     orderBy: {
                         id: 'desc'
@@ -173,12 +105,8 @@ class Controller {
 
             if(!data) throw BasicError('Esse grupo não existe ou foi excluído.', 404);
 
-            // check if you are a member/staff of the group
-            const isMember = data?.members?.some(member => member.userId === userLoggedIn.uuid);
-            const isStaff = data?.staffs?.some(staff => staff.staffId === userLoggedIn.uuid);
-
-            let membersWithoutLoggedUser = data?.members?.filter(member => member.userId !== userLoggedIn.uuid);
-            let staffWithoutLoggedUser = data?.staffs?.filter(staff => staff.staffId !== userLoggedIn.uuid);
+            let membersWithoutLoggedUser = data?.members?.filter(member => member.userId !== userLoggedIn.uuid && member.type === member_type.MEMBER);
+            let staffWithoutLoggedUser = data?.members?.filter(member => member.userId !== userLoggedIn.uuid  && member.type === member_type.STAFF);
             // rename staff to user and delete unnecessary data
             membersWithoutLoggedUser?.map(m => {
                  // @ts-expect-error
@@ -189,7 +117,7 @@ class Controller {
                 delete s.staffId; delete s.groupId; s['user'] = s.staff; delete s.staff.email; delete s.staff.password; delete s.staff;
             });
 
-            const participation = isMember ? Participation.member : isStaff ? Participation.staff : undefined;
+            const participation = data.members.find(member => member.userId === userLoggedIn.uuid)?.type;
 
             const parsedData = {
                 ...data,
@@ -228,10 +156,11 @@ class Controller {
                 }
             });
 
-            const foundStaff = await model.group_staffs.findFirst({
+            const foundStaff = await model.group_members.findFirst({
                 where: {
                     groupId: id,
-                    staffId: userLoggedIn.uuid
+                    userId: userLoggedIn.uuid,
+                    type: member_type.STAFF
                 }
             });
 
@@ -266,4 +195,4 @@ class Controller {
     
 }
 
-export default new Controller();
+export default new GroupController();
