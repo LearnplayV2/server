@@ -58,10 +58,19 @@ class GroupController {
         const {userLoggedIn} = req as RequestUser;
         const { id } = req.params;
         try {
-            await Model.delete({
-                id,
-                userId: userLoggedIn.uuid!,
+            const find_staff = await model.group_members.findFirst({
+                where: {
+                    groupId: id,
+                    AND: {
+                        userId: userLoggedIn.uuid,
+                    },
+                    type: member_type.STAFF
+                }
             });
+    
+            if(find_staff == null) throw new Error('Você não tem permissões pra fazer isso');
+
+            await model.groups.delete({where: {uuid: id}});
 
             res.json({ message: 'Grupo deletado com sucesso!' });
         } catch (err: any) {

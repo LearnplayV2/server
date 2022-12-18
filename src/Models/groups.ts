@@ -5,7 +5,6 @@ import DBUtils from "../Utils/dbUtils";
 import {paginate} from '../Utils/pagination';
 
 const prisma = new PrismaClient({log: ['query']});
-
 const limitPerPage = 4; 
 
 export interface ISearchGroup {
@@ -74,33 +73,6 @@ class Model {
         return [group, member];
     }
 
-    public async delete(data: {id: string, userId: string}) {
-        try {
-
-            const find_staff = await prisma.group_members.findFirst({
-                where: {
-                    groupId: data.id,
-                    AND: {
-                        userId: data.userId,
-                    },
-                    type: member_type.STAFF
-                }
-            });
-    
-            if(find_staff == null) throw new Error('Você não tem permissões pra fazer isso');
-            
-            // then delete groups and relations
-            Promise.all([
-                prisma.group_members.deleteMany({ where: { groupId: data.id } }),
-                prisma.groups.delete({where: {uuid: data.id}})
-            ]);
-            
-        } catch(err: any) {
-            throw RequestError(err.message ?? 'Ocorreu um erro inesperado');
-        }
-        
-    } 
-    
     public async myGroups(data: {userId: string, page: number, filter?: string}) {
 
         const totalItems = await prisma.groups.count({
