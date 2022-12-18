@@ -36,14 +36,13 @@ class GroupPostsController {
                 })
             ]);
 
-            if(data.length == 0) throw BasicError('Nenhum post foi encontrado', 204);
+            if(data.length == 0) throw BasicError('Nenhuma postagem foi encontrada.', 404);
 
             const pagination =  paginate({limit: perPage, page, count: {totalItems}});
 
             return res.json(pagination);
             
         } catch(err: any) {
-            console.log(err)
             res.status(err?.status ?? 500).json(err);
         }
     }
