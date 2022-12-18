@@ -46,6 +46,7 @@ model groups {
   visibility          group_status      @default(PUBLIC)
   members             group_members[]
   links               group_links[]
+  posts               group_posts[]
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
 }
@@ -83,6 +84,8 @@ model group_posts {
   id                   String                  @id @default(uuid())
   member               group_members           @relation(fields: [memberId], references: [id], onDelete:Cascade, onUpdate: Cascade)
   memberId             String
+  group                groups                  @relation(fields: [groupId], references: [uuid], onDelete: Cascade)
+  groupId              String
   content              String                  @db.Text
   comments             group_posts_comments[]
 }

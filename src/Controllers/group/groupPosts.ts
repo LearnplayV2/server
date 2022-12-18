@@ -31,7 +31,7 @@ class GroupPostsController {
                     skip: (params.perPage * (page - 1)),
                     take: perPage,
                     where: {
-                        id: id.toString()
+                        groupId: id.toString()
                     },
                 })
             ]);
@@ -40,7 +40,13 @@ class GroupPostsController {
 
             const pagination =  paginate({limit: perPage, page, count: {totalItems}});
 
-            return res.json(pagination);
+            const response = {
+                ...pagination,
+                totalItems,
+                data
+            }
+
+            return res.json(response);
             
         } catch(err: any) {
             res.status(err?.status ?? 500).json(err);
@@ -50,6 +56,7 @@ class GroupPostsController {
     static async create(req: Request, res: Response) {
         try {
             const {id} = req.params;
+            console.log(req.params)
             const {userLoggedIn} = req as RequestUser;
 
             if(!id) throw BasicError('Informe o id do grupo', 422);
@@ -59,7 +66,8 @@ class GroupPostsController {
 
             const findMember = await model.group_members.findFirst({
                 where: {
-                    userId: userLoggedIn.uuid!.toString(),
+                    userId: userLoggedIn.uuid,
+                    groupId: id.toString()
                 }
             });
 
@@ -67,7 +75,8 @@ class GroupPostsController {
                 await model.group_posts.create({
                     data: {
                         content,
-                        memberId: findMember.id
+                        memberId: findMember.id,
+                        groupId: id.toString()
                     }
                 });
 
