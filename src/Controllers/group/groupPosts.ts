@@ -33,6 +33,9 @@ class GroupPostsController {
                     where: {
                         groupId: id.toString()
                     },
+                    orderBy: {
+                        createdAt: 'desc'
+                    }
                 })
             ]);
 

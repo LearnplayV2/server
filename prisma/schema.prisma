@@ -73,6 +73,8 @@ model group_members {
   posts               group_posts[]
   comments            group_posts_comments[]
   type                member_type              @default(MEMBER)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
 }
 
 enum member_type {
@@ -88,6 +90,8 @@ model group_posts {
   groupId              String
   content              String                  @db.Text
   comments             group_posts_comments[]
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
 }
 
 model group_posts_comments {
@@ -97,4 +101,6 @@ model group_posts_comments {
   member               group_members           @relation(fields: [memberId], references: [id], onDelete:Cascade, onUpdate: Cascade)
   memberId             String
   content              String                  @db.Text
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
 }
