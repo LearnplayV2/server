@@ -32,12 +32,13 @@ class GroupAttachments {
             });
 
             // save file in database first
-            await Promise.all([
+            const [_, attached, __] = await Promise.all([
                 await model.group_attachments.createMany({ data }),
+                await model.group_attachments.findMany({where: { groupId: id, memberId: groupMember.id, fileName: {contains: mediaId}}, select: {id: true, fileName: true, createdAt: true, updatedAt: true}}),
                 await media.saveFiles(mediaId, attachments)
             ]);
 
-            res.status(201).end();
+            res.status(201).json({attached});
             
         } catch(err: any) {
             res.status(err?.status ?? 500).json(err);
@@ -46,22 +47,20 @@ class GroupAttachments {
 
     static async delete(req: Request, res: Response) {
         const {id} = req.params;
-        const {userLoggedIn} = req as RequestUser;
+        const {groupMember} = req as RequestMember;
+        const {fileNames} = req.body as {fileNames: string[]};
         try {
+            if(!fileNames) throw BasicError('Informe o nome do anexo', 422);
 
-            const mediaId = `${id}_fileId-${uuid()}`;
+            const media = new Media(Paths.media.attachments.groupPosts);
 
-            // const data = [];
-            // attachments.forEach((_, index) => {
-            //     data.push({fileName: `${mediaId}_${index+1}`, groupId: id.toString()});
-            // });
-
-            // delete file in database first
-            // await Promise.all([
-            //     await model.group_attachments.createMany({ data }),
-            //     await media.saveFiles(mediaId, attachments)
-            // ]);
-
+            await Promise.all(
+                fileNames.map(async(fileName) => {
+                    await model.group_attachments.deleteMany({where: {groupId: id.toString(), fileName: fileName, memberId: groupMember.id }});
+                    await media.removeFile(fileName);
+                }
+            ));
+            
             res.status(201).end();
             
         } catch(err: any) {

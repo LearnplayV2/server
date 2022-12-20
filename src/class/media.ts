@@ -85,7 +85,8 @@ class Media {
     async removeFile(fileName: string) {
         const path = `${this.path}/${fileName}`;
         if(this.fileExists(fileName)) {
-            fs.unlinkSync(path);
+            const findFile = `${this.path}/${this.findFile(fileName)}`
+            fs.unlinkSync(findFile);
         }
     }
 
@@ -98,6 +99,13 @@ class Media {
     private async fileType(buffer: Buffer) {
         const fileType = await fromBuffer(buffer);
         return fileType;
+    }
+    
+    private findFile(fileName: string) {
+        const file = fileName.split('.');
+        const findByFileName = fs.readdirSync(this.path).find(fn => fn.startsWith(file[0]));
+
+        return findByFileName;
     }
     
     private fileExists(fileName: string) {
