@@ -108,8 +108,20 @@ class GroupPostsController {
             const media = new Media(Paths.media.attachments.groupPosts);
             const mediaId = `${id}_fileId-${uuid()}`;
 
-            await media.saveFiles(mediaId, attachments, 6);
+            if(!Array.isArray(attachments)) attachments = [attachments];
+            if(attachments.length > 6) throw BasicError(`O limite de anexos é 6`, 422);
             
+            const data = [];
+            attachments.forEach((_, index) => {
+                data.push({fileName: `${mediaId}_${index+1}`, groupId: id.toString()});
+            });
+
+            // save file in database first
+            await Promise.all([
+                await model.group_attachments.createMany({ data }),
+                await media.saveFiles(mediaId, attachments)
+            ]);
+
             res.status(201).end();
             
         } catch(err: any) {

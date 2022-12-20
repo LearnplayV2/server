@@ -47,6 +47,7 @@ model groups {
   members             group_members[]
   links               group_links[]
   posts               group_posts[]
+  attachments         group_attachments[]
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
 }
@@ -73,8 +74,8 @@ model group_members {
   posts               group_posts[]
   comments            group_posts_comments[]
   type                member_type              @default(MEMBER)
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
 }
 
 enum member_type {
@@ -90,26 +91,29 @@ model group_posts {
   groupId              String
   content              String                        @db.Text
   comments             group_posts_comments[]        
-  attachments          group_posts_attachments[]
+  attachments          group_attachments[]
   createdAt            DateTime                      @default(now())
   updatedAt            DateTime                      @updatedAt
 }
 
-model group_posts_attachments {
+model group_attachments {
   id                   String                        @id @default(uuid())
-  post                 group_posts                   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId               String
+  fileName             String                        
+  group                groups                        @relation(fields: [groupId], references: [uuid])
+  groupId              String
+  post                 group_posts?                  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId               String?
   createdAt            DateTime                      @default(now())
   updatedAt            DateTime                      @updatedAt
 }
 
 model group_posts_comments {
-  id                   String                  @id @default(uuid())
-  post                 group_posts             @relation(fields: [postId], references: [id], onDelete:Cascade, onUpdate: Cascade)
+  id                   String                   @id @default(uuid())
+  post                 group_posts              @relation(fields: [postId], references: [id], onDelete:Cascade, onUpdate: Cascade)
   postId               String
-  member               group_members           @relation(fields: [memberId], references: [id], onDelete:Cascade, onUpdate: Cascade)
+  member               group_members            @relation(fields: [memberId], references: [id], onDelete:Cascade, onUpdate: Cascade)
   memberId             String
-  content              String                  @db.Text
-  createdAt           DateTime                 @default(now())
-  updatedAt           DateTime                 @updatedAt
+  content              String                   @db.Text
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
 }
