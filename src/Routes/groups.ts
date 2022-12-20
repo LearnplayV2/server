@@ -44,6 +44,10 @@ router.get('/posts/:id', [ProtectedRoute, MemberProtectedRoute], GroupPostsContr
 // add new post
 router.post('/posts/:id', [ProtectedRoute, MemberProtectedRoute], GroupPostsController.create);
 
+// insert attachment
+router.post('/posts/:id/attachment', [ProtectedRoute, MemberProtectedRoute], GroupPostsController.createAttachment);
 
+// delete attachment
+router.delete('/posts/:id/attachment', [ProtectedRoute, MemberProtectedRoute], GroupPostsController.deleteAttachment);
 
 export default router;

@@ -1,4 +1,5 @@
-import { fromBuffer } from 'file-type';
+import { UploadedFile } from 'express-fileupload';
+import { FileTypeResult, fromBuffer } from 'file-type';
 import fs from 'fs';
 import { RequestError } from 'request-error';
 
@@ -9,19 +10,33 @@ class Media {
         this.path = 'src/media/'.concat(folder);
     }
     
-    async saveFiles(id : string, base64: string) {
-        if (base64.includes(';base64,')) base64 = base64.split(';base64,')[1];
-        const buffer = Buffer.from(base64, 'base64');
-
-        const fileType = await fromBuffer(buffer);
-
-        if (!fileType) throw RequestError(`Erro no upload do arquivo: ${id}`, 422);
+    async saveFile(id : string, file: UploadedFile | string) {
+        let fileType : (FileTypeResult | null) = null;
+        let buffer : Buffer | null = null;
+        
+        if(typeof file === 'string') {
+            buffer = await this.convertBase64ToBuffer(file);
+        } else {
+            buffer = file.data;
+        }
+        
+        fileType = await this.fileType(buffer);
+        
+        if (!fileType || !buffer) throw RequestError(`Erro no upload do arquivo: ${id}`, 422);
 
         const fileNewName = `${id}.${fileType.ext}`;
-
+        const path = `${this.path}/${fileNewName}`;
         if (!fs.existsSync(this.path)) fs.mkdirSync(this.path, {recursive: true});
-    
-        const writeFile = () => fs.writeFileSync(`${this.path}/${fileNewName}`, buffer);
+
+        if(typeof file !== 'string') {
+            console.log(fileType)
+            file.mv(path, (err) => {
+                if (err) throw RequestError(`Erro no upload do arquivo: ${id}`, 422);
+            });
+            return;
+        }
+
+        const writeFile = () => fs.writeFileSync(path, buffer);
         
         // create file in directory
         if (!this.fileExists(fileNewName)) {
@@ -63,6 +78,17 @@ class Media {
         }
     }
 
+    private async convertBase64ToBuffer(base64: string) {
+        if (base64.includes(';base64,')) base64 = base64.split(';base64,')[1];
+        const buffer = Buffer.from(base64, 'base64');
+        return buffer;
+    }
+    
+    private async fileType(buffer: Buffer) {
+        const fileType = await fromBuffer(buffer);
+        return fileType;
+    }
+    
     private fileExists(fileName: string) {
         const file = fileName.split('.');
         const findByFileName = fs.readdirSync(this.path).some(fn => fn.startsWith(file[0]));

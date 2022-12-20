@@ -1,8 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import type { Request, Response } from "express";
+import fileUpload from "express-fileupload";
+import Media from "../../class/media";
+import Paths from "../../class/paths";
 import type { RequestUser } from "../../Types/user";
 import { BasicError } from "../../Utils/basicError";
 import { paginate } from "../../Utils/pagination";
+import {v4 as uuid} from 'uuid';
 
 const model = new PrismaClient({log: ['query']});
 
@@ -55,7 +59,7 @@ class GroupPostsController {
             res.status(err?.status ?? 500).json(err);
         }
     }
-    
+
     static async create(req: Request, res: Response) {
         try {
             const {id} = req.params;
@@ -91,6 +95,34 @@ class GroupPostsController {
         } catch(err : any) {
             res.status(err?.status ?? 500).json(err);
         }
+    }
+
+    static async createAttachment(req: Request, res: Response) {
+        console.log(req.files)
+        const {id} = req.params;
+        const {userLoggedIn} = req as RequestUser;
+        let {attachments} = req.files as fileUpload.FileArray;
+        try {
+            if(!attachments) throw BasicError('Informe os anexos', 422);            
+            const media = new Media(Paths.media.attachments.groupPosts);
+            const mediaId = `${id}_fileId-${uuid()}`;
+            console.log(attachments)
+            
+            if(Array.isArray(attachments)) {
+                // todo: implementar upload de multiplos arquivos
+            } else {
+                media.saveFile(mediaId, attachments);
+            }
+
+            res.status(201).end();
+            
+        } catch(err: any) {
+            res.status(err?.status ?? 500).json(err);
+        }
+    }
+
+    static async deleteAttachment(req: Request, res: Response) {
+
     }
 
 }

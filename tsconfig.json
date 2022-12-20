@@ -22,5 +22,21 @@
 		"emitDecoratorMetadata": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-	}
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"],
+			"@cache/*": ["src/cache/*"],
+			"@class/*": ["src/class/*"],
+			"@controller/*": ["src/Controllers/*"],
+			"@mail/*": ["src/Mail/*"],
+			"@middleware/*": ["src/middleware/*"],
+			"@models/*": ["src/Models/*"],
+			"@routes/*": ["src/Routes/*"],
+			"@services/*": ["src/Services/*"],
+			"@types/*": ["src/Types/*"],
+			"@utils/*": ["src/Utils/*"]
+		}
+	},
+	"include": ["src"],
+	"references": [{ "path": "./tsconfig.node.json" }]
 }

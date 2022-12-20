@@ -6,6 +6,7 @@ import NotificationRoutes from './src/Routes/notifications';
 import GroupRoutes from './src/Routes/groups';
 import { Server } from 'socket.io';
 import SocketController from './src/Controllers/socket';
+import fileUpload from 'express-fileupload';
 
 const app = express();
 
@@ -23,6 +24,7 @@ SocketController(io);
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/public/', express.static(__dirname + '/public'));
 app.use(express.json({limit: '500mb'}));
+app.use(fileUpload());
 app.use(cors(corsConfig));
 app.use((req: any, res: Response, next: NextFunction) => {
     req.io = io;

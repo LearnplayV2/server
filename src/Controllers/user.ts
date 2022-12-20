@@ -7,13 +7,12 @@ import jwt from 'jsonwebtoken';
 import { RequestError } from "request-error";
 import NotificationsModel from '../Models/notifications';
 import type { RequestId } from "../Types/notifications";
-import Media from "../Utils/media";
+import Media from "../class/media";
+import Paths from "../class/paths";
 
 const JWTSECRET = process.env.JWTSECRET;
 
 class Controller {
-
-    static mediaUserProfilePath = 'user/profile-picture';
 
     public async create(req: Request, res: Response) {
         const { email, password, name } = req.body as User;
@@ -25,7 +24,7 @@ class Controller {
 
             const query = await Model.create(user);
 
-            // @ts-expect-error
+            // @ts-ignore
             delete query.password;
 
             const token = jwt.sign(query, JWTSECRET!);
@@ -51,7 +50,7 @@ class Controller {
 
             const token = jwt.sign(query, JWTSECRET!);
 
-            // @ts-expect-error
+            // @ts-ignore
             delete query.password;
 
             res.status(200).json({ token });
@@ -86,7 +85,7 @@ class Controller {
             if(!userLoggedIn.uuid) throw RequestError('Usuário não encontrado', 422);
             else {
                 // save file in local storage
-                await new Media(Controller.mediaUserProfilePath).saveFiles(userLoggedIn.uuid, req.body.base64File);
+                await new Media(Paths.media.attachments.profile).saveFile(userLoggedIn.uuid, req.body.base64File);
             }
             
             return res.status(200).json();
@@ -103,7 +102,7 @@ class Controller {
             
             if(!userLoggedIn.uuid) throw RequestError('Ocorreu um erro do servidor', 500);
 
-            const userItems = await new Media(Controller.mediaUserProfilePath).getBase64File(userLoggedIn.uuid);
+            const userItems = await new Media(Paths.media.attachments.profile).getBase64File(userLoggedIn.uuid);
             
             return res.status(200).json({photo: userItems });
 
