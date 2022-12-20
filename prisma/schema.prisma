@@ -73,6 +73,7 @@ model group_members {
   userId              String
   posts               group_posts[]
   comments            group_posts_comments[]
+  attachments         group_attachments[]
   type                member_type              @default(MEMBER)
   createdAt           DateTime                 @default(now())
   updatedAt           DateTime                 @updatedAt
@@ -101,6 +102,8 @@ model group_attachments {
   fileName             String                        
   group                groups                        @relation(fields: [groupId], references: [uuid])
   groupId              String
+  member               group_members                 @relation(fields: [memberId], references: [id])     
+  memberId             String
   post                 group_posts?                  @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId               String?
   createdAt            DateTime                      @default(now())

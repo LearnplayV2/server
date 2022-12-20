@@ -6,6 +6,7 @@ import MemberProtectedRoute from "../Middleware/group/MemberProtectedRoute";
 import GroupLinksController from "../Controllers/group/groupLinks";
 import GroupConfigController from "../Controllers/group/groupConfig";
 import GroupPostsController from "../Controllers/group/groupPosts";
+import GroupAttachments from "../Controllers/group/groupAttachments";
 
 const router = Router();
 
@@ -44,10 +45,12 @@ router.get('/posts/:id', [ProtectedRoute, MemberProtectedRoute], GroupPostsContr
 // add new post
 router.post('/posts/:id', [ProtectedRoute, MemberProtectedRoute], GroupPostsController.create);
 
+//* ------------------------------- ATTACHMENTS CONTROLLER
+
 // insert attachment
-router.post('/posts/:id/attachment', [ProtectedRoute, MemberProtectedRoute], GroupPostsController.createAttachment);
+router.post('/posts/:id/attachment', [ProtectedRoute, MemberProtectedRoute], GroupAttachments.create);
 
 // delete attachment
-router.delete('/posts/:id/attachment', [ProtectedRoute, MemberProtectedRoute], GroupPostsController.deleteAttachment);
+router.delete('/posts/:id/attachment', [ProtectedRoute, MemberProtectedRoute], GroupAttachments.delete);
 
 export default router;

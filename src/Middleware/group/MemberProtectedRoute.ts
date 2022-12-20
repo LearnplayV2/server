@@ -1,6 +1,7 @@
 import { member_type, PrismaClient } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
-import type { RequestUser } from '../../Types/user';
+import type { RequestMember, RequestUser } from '../../Types/user';
+import prisma_user_selection from "../../Utils/prismaUserSelection";
 
 const model = new PrismaClient({log: ['query']});
 
@@ -31,7 +32,21 @@ export default async function MemberProtectedRoute(req: Request, res: Response, 
                 return member.userId === userLoggedIn.uuid && member.type == member_type.STAFF;
             });
             const isPrivate = data?.visibility == 'PRIVATE';
-    
+
+            const foundMember = await model.group_members.findFirst({
+                where: {
+                    userId: userLoggedIn.uuid
+                },
+                include: {
+                    user: {
+                        select: prisma_user_selection({avoid: ['password', 'status', 'email']})
+                    }
+                },
+            });
+
+            //@ts-ignore
+            req.groupMember = foundMember;
+            
             if(!isStaff) {
                 if(isPrivate && !isMember) {
                     return res.status(401).json({msg: 'Você não tem permissões pra fazer isso'});
