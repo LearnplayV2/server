@@ -104,16 +104,12 @@ class GroupPostsController {
         let {attachments} = req.files as fileUpload.FileArray;
         try {
             if(!attachments) throw BasicError('Informe os anexos', 422);            
+
             const media = new Media(Paths.media.attachments.groupPosts);
             const mediaId = `${id}_fileId-${uuid()}`;
-            console.log(attachments)
-            
-            if(Array.isArray(attachments)) {
-                // todo: implementar upload de multiplos arquivos
-            } else {
-                media.saveFile(mediaId, attachments);
-            }
 
+            await media.saveFiles(mediaId, attachments, 6);
+            
             res.status(201).end();
             
         } catch(err: any) {

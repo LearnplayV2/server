@@ -9,6 +9,18 @@ class Media {
     constructor(folder: string) {
         this.path = 'src/media/'.concat(folder);
     }
+
+    async saveFiles(id: string, files: UploadedFile | string | UploadedFile[] | string[], maxItems?: number) {
+        if(Array.isArray(files)) {
+            if(maxItems && files.length > maxItems) throw RequestError(`O limite de anexos é ${maxItems}`, 422);
+            for(let i = 0; i < files.length; i++) {
+                await this.saveFile(`${id}_${i+1}`, files[i]);
+            }            
+            return;
+        } else {
+            this.saveFile(id, files);
+        }
+    }
     
     async saveFile(id : string, file: UploadedFile | string) {
         let fileType : (FileTypeResult | null) = null;
@@ -29,7 +41,6 @@ class Media {
         if (!fs.existsSync(this.path)) fs.mkdirSync(this.path, {recursive: true});
 
         if(typeof file !== 'string') {
-            console.log(fileType)
             file.mv(path, (err) => {
                 if (err) throw RequestError(`Erro no upload do arquivo: ${id}`, 422);
             });

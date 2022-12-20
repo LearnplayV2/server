@@ -85,7 +85,7 @@ class Controller {
             if(!userLoggedIn.uuid) throw RequestError('Usuário não encontrado', 422);
             else {
                 // save file in local storage
-                await new Media(Paths.media.attachments.profile).saveFile(userLoggedIn.uuid, req.body.base64File);
+                await new Media(Paths.media.attachments.profile).saveFiles(userLoggedIn.uuid, req.body.base64File);
             }
             
             return res.status(200).json();
