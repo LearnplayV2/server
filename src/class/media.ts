@@ -101,14 +101,14 @@ class Media {
         return fileType;
     }
     
-    private findFile(fileName: string) {
+    public findFile(fileName: string) {
         const file = fileName.split('.');
         const findByFileName = fs.readdirSync(this.path).find(fn => fn.startsWith(file[0]));
 
         return findByFileName;
     }
     
-    private fileExists(fileName: string) {
+    public fileExists(fileName: string) {
         const file = fileName.split('.');
         const findByFileName = fs.readdirSync(this.path).some(fn => fn.startsWith(file[0]));
         

@@ -1,10 +1,9 @@
 import fileUpload from "express-fileupload";
-import Media from "../../class/media";
 import Paths from "../../class/paths";
 import {v4 as uuid} from 'uuid';
-import { PrismaClient } from "@prisma/client";
+import { file_type, PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { RequestMember, RequestUser } from "../../Types/user";
+import { RequestMember } from "../../Types/user";
 import { BasicError } from "../../Utils/basicError";
 import Attachment from "../../class/attachment";
 
@@ -14,12 +13,11 @@ class GroupAttachments {
 
     static async create(req: Request, res: Response) {
         const {id} = req.params;
-        const {userLoggedIn} = req as RequestUser;
         const {groupMember} = req as RequestMember;
         
         try {
             let {attachments} = req.files as fileUpload.FileArray;
-            const {postId} = req.body;
+            const {postId, filesType} = req.body;
             if(!attachments) throw BasicError('Informe os anexos', 422);            
 
             const media = new Attachment(Paths.media.attachments.groupPosts);
@@ -27,12 +25,14 @@ class GroupAttachments {
 
             if(!Array.isArray(attachments)) attachments = [attachments];
             if(attachments.length > 6) throw BasicError(`O limite de anexos é 6`, 422);
-
+            
             const data = [];
-            attachments.forEach((_, index) => {
-                data.push({fileName: `${mediaId}_${index+1}`, postId: postId, groupId: id.toString(), memberId: groupMember.id});
-            });
 
+            attachments.forEach((attachment, index) => {
+                const ext = attachment.name.split('.').pop();
+                data.push({fileName: `${mediaId}_${index+1}.${ext}`, postId: postId, groupId: id.toString(), memberId: groupMember.id, fileType: filesType});
+            });
+            
             // save file in database first
             const [_, attached, __] = await Promise.all([
                 await model.group_attachments.createMany({ data }),

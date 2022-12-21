@@ -6,7 +6,7 @@ class Attachment extends Media {
         super(folder);
         this.path = 'public/attachments/'.concat(folder);
     }
-    
+
 }
 
 export default Attachment;

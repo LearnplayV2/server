@@ -6,15 +6,22 @@ class AttachmentsController {
 
     static async show(req: Request, res: Response) {
         try {
-            const {file, path} = req.query as {file: string, path: string};
+            const {file, path, data} = req.query as {file: string, path: string, data?: string};
             if(!file) throw BasicError('Informe o título do anexo', 422);
 
             const attachments = new Attachment(path);
-            const data = await attachments.getBase64File(file);
 
-            if(!data) throw BasicError('Anexo não encontrado', 404);
+            let attachment = 'Finding attachment...';
 
-            res.send(data);
+            if(!data || data == 'data') {
+                attachment = await attachments.getBase64File(file);
+                if(!attachment) throw BasicError('Anexo não encontrado', 404);
+                return res.send(attachment);
+            } else if(attachments.fileExists(file)) {
+                throw BasicError('to do direct file', 404);
+            }
+
+            throw BasicError('Anexo não encontrado', 404);
             
         } catch(err) {
             console.log(err);

@@ -100,6 +100,7 @@ model group_posts {
 model group_attachments {
   id                   String                        @id @default(uuid())
   fileName             String                        
+  fileType             file_type
   group                groups                        @relation(fields: [groupId], references: [uuid])
   groupId              String
   member               group_members                 @relation(fields: [memberId], references: [id])     
@@ -108,6 +109,12 @@ model group_attachments {
   postId               String?
   createdAt            DateTime                      @default(now())
   updatedAt            DateTime                      @updatedAt
+}
+
+enum file_type {
+  image
+  audio
+  document
 }
 
 model group_posts_comments {
