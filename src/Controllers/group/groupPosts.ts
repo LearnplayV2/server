@@ -31,13 +31,18 @@ class GroupPostsController {
                     skip: (params.perPage * (page - 1)),
                     take: perPage,
                     where: {
-                        groupId: id.toString()
+                        groupId: id.toString(),
                     },
                     orderBy: {
                         createdAt: 'desc'
+                    },
+                    include: {
+                        attachments: true
                     }
                 })
             ]);
+
+            console.log(data[0])
 
             if(data.length == 0) throw BasicError('Nenhuma postagem foi encontrada.', 404);
 
@@ -75,15 +80,18 @@ class GroupPostsController {
             });
 
             if(findMember) {
-                await model.group_posts.create({
+                const data =  await model.group_posts.create({
                     data: {
                         content,
                         memberId: findMember.id,
                         groupId: id.toString()
+                    },
+                    include: {
+                        attachments: true
                     }
                 });
 
-                res.send("Post criado com sucesso!");
+                res.status(201).json({...data, message: "Post criado com sucesso!"});
             } else {
                 throw BasicError('Membro não encontrado', 401);
             }

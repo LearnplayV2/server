@@ -15,9 +15,10 @@ class GroupAttachments {
         const {id} = req.params;
         const {userLoggedIn} = req as RequestUser;
         const {groupMember} = req as RequestMember;
-        let {attachments} = req.files as fileUpload.FileArray;
-
+        
         try {
+            let {attachments} = req.files as fileUpload.FileArray;
+            const {postId} = req.body;
             if(!attachments) throw BasicError('Informe os anexos', 422);            
 
             const media = new Media(Paths.media.attachments.groupPosts);
@@ -28,7 +29,7 @@ class GroupAttachments {
 
             const data = [];
             attachments.forEach((_, index) => {
-                data.push({fileName: `${mediaId}_${index+1}`, groupId: id.toString(), memberId: groupMember.id});
+                data.push({fileName: `${mediaId}_${index+1}`, postId: postId, groupId: id.toString(), memberId: groupMember.id});
             });
 
             // save file in database first
@@ -41,6 +42,7 @@ class GroupAttachments {
             res.status(201).json({attached});
             
         } catch(err: any) {
+            console.log(err);
             res.status(err?.status ?? 500).json(err);
         }
     }
@@ -67,6 +69,7 @@ class GroupAttachments {
             res.status(err?.status ?? 500).json(err);
         }
     }
+
 }
 
 export default GroupAttachments;
