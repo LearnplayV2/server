@@ -7,6 +7,7 @@ import GroupRoutes from './src/Routes/groups';
 import { Server } from 'socket.io';
 import SocketController from './src/Controllers/socket';
 import fileUpload from 'express-fileupload';
+import AttachmentsController from './src/Controllers/attachments';
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use((req: any, res: Response, next: NextFunction) => {
 
 //* --- Basic Routes
 app.get('/', IndexController.greetings);
+app.get('/attachments', AttachmentsController.show);
 app.get('/debug', IndexController.debug);
 app.use('/user', UserRoutes);
 app.use('/user', NotificationRoutes);

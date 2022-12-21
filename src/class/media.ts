@@ -4,7 +4,7 @@ import fs from 'fs';
 import { RequestError } from 'request-error';
 
 class Media {
-    private path = '';
+    protected path = '';
     
     constructor(folder: string) {
         this.path = 'src/media/'.concat(folder);

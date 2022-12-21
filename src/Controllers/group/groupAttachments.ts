@@ -6,6 +6,7 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { RequestMember, RequestUser } from "../../Types/user";
 import { BasicError } from "../../Utils/basicError";
+import Attachment from "../../class/attachment";
 
 const model = new PrismaClient({log: ['query']});
 
@@ -21,7 +22,7 @@ class GroupAttachments {
             const {postId} = req.body;
             if(!attachments) throw BasicError('Informe os anexos', 422);            
 
-            const media = new Media(Paths.media.attachments.groupPosts);
+            const media = new Attachment(Paths.media.attachments.groupPosts);
             const mediaId = `${id}_fileId-${uuid()}`;
 
             if(!Array.isArray(attachments)) attachments = [attachments];
@@ -54,7 +55,7 @@ class GroupAttachments {
         try {
             if(!fileNames) throw BasicError('Informe o nome do anexo', 422);
 
-            const media = new Media(Paths.media.attachments.groupPosts);
+            const media = new Attachment(Paths.media.attachments.groupPosts);
 
             await Promise.all(
                 fileNames.map(async(fileName) => {

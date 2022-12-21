@@ -42,8 +42,6 @@ class GroupPostsController {
                 })
             ]);
 
-            console.log(data[0])
-
             if(data.length == 0) throw BasicError('Nenhuma postagem foi encontrada.', 404);
 
             const pagination =  paginate({limit: perPage, page, count: {totalItems}});
@@ -64,7 +62,6 @@ class GroupPostsController {
     static async create(req: Request, res: Response) {
         try {
             const {id} = req.params;
-            console.log(req.params)
             const {userLoggedIn} = req as RequestUser;
 
             if(!id) throw BasicError('Informe o id do grupo', 422);
