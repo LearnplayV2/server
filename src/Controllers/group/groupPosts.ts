@@ -81,7 +81,7 @@ class GroupPostsController {
                     data: {
                         content,
                         memberId: findMember.id,
-                        groupId: id.toString()
+                        groupId: id.toString(),
                     },
                     include: {
                         attachments: true

@@ -1,7 +1,5 @@
 # Use root/example as user/password credentials
-version: '3.1'
-
-name: learnplay
+version: '3.7'
 
 services:
   cache:
@@ -25,11 +23,6 @@ services:
       - ${DB_PORT}:3306
     volumes:
       - my-db:/var/lib/mysql
-  smtp:
-    container_name: smtp
-    image: jeanberu/mailcatcher
-    ports: 
-       - ${SMTP_DOCKER_PORT}:1080
 volumes:
   my-db:
   cache:

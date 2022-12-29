@@ -1,7 +1,7 @@
 import fileUpload from "express-fileupload";
 import Paths from "../../class/paths";
 import {v4 as uuid} from 'uuid';
-import { file_type, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { RequestMember } from "../../Types/user";
 import { BasicError } from "../../Utils/basicError";
@@ -24,6 +24,8 @@ class GroupAttachments {
             const mediaId = `${id}_fileId-${uuid()}`;
 
             if(!Array.isArray(attachments)) attachments = [attachments];
+
+            console.log(attachments.length);
             if(attachments.length > 6) throw BasicError(`O limite de anexos é 6`, 422);
             
             const data = [];
