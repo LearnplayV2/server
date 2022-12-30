@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import type { RequestUser } from "../../Types/user";
 import { BasicError } from "../../Utils/basicError";
 import { paginate } from "../../Utils/pagination";
+import prisma_user_selection from "../../Utils/prismaUserSelection";
 
 const model = new PrismaClient({log: ['query']});
 
@@ -37,8 +38,15 @@ class GroupPostsController {
                         createdAt: 'desc'
                     },
                     include: {
-                        attachments: true
-                    }
+                        attachments: true,
+                        member: {
+                            include: {
+                                user: {
+                                    select: prisma_user_selection({avoid: ['password', 'status', 'email']})
+                                }
+                            }
+                        }
+                    },
                 })
             ]);
 

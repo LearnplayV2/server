@@ -13,5 +13,6 @@ router.post('/set-profile-picture', ProtectedRoute, Controller.setProfilePicture
 // router.get('/get-profile-picture/:uuid', Controller.getProfilePicture);
 router.get('/profile/:uuid', ProtectedRoute, Controller.getProfile);
 router.get('/members', ProtectedRoute, Controller.getMembers);
+router.get('/picture', Controller.showPicture);
 
 export default router;

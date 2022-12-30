@@ -9,6 +9,8 @@ import NotificationsModel from '../Models/notifications';
 import type { RequestId } from "../Types/notifications";
 import Media from "../class/media";
 import Paths from "../class/paths";
+import { BasicError } from "../Utils/basicError";
+import path from "path";
 
 const JWTSECRET = process.env.JWTSECRET;
 
@@ -199,6 +201,30 @@ class Controller {
 
         } catch(err : any) {
             return res.status(err?.status ?? 500).json(err);
+        }
+    }
+
+    async showPicture(req: Request, res: Response) {
+        try {
+            const {userId} = req.query;
+            if(!userId) throw BasicError('Informe o id do usuário', 404);
+
+            const media = new Media(Paths.media.attachments.profile);
+            const fileExists = media.fileExists(userId.toString());
+            console.log(fileExists)
+
+            if(fileExists) {
+                const file = media.findFile(userId.toString());
+                const filePath = path.join(__dirname, '..', 'media', Paths.media.attachments.profile, file);
+
+                return res.sendFile(filePath);
+    
+            } else {
+                throw BasicError('Foto não encontrada', 404);
+            }
+            
+        } catch(err: any) {
+            return res.status(err?.status?? 500).json(err);
         }
     }
 
