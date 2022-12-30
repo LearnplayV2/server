@@ -211,7 +211,6 @@ class Controller {
 
             const media = new Media(Paths.media.attachments.profile);
             const fileExists = media.fileExists(userId.toString());
-            console.log(fileExists)
 
             if(fileExists) {
                 const file = media.findFile(userId.toString());
@@ -220,7 +219,8 @@ class Controller {
                 return res.sendFile(filePath);
     
             } else {
-                throw BasicError('Foto não encontrada', 404);
+                const defaultFile = path.join(__dirname, '..', '..', 'public', 'default-avatar.jpg');
+                return res.sendFile(defaultFile);
             }
             
         } catch(err: any) {
