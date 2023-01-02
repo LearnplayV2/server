@@ -13,6 +13,7 @@ class GroupPostsController {
         try {
             const {id} = req.params;
             if(!id) throw BasicError('Informe o id do grupo', 422);
+            if(typeof req.query.perPage == 'undefined') req.query.perPage = '15';
 
             const params = {
                 perPage: req.query.perPage ? parseInt(req.query.perPage.toString()) : 10,

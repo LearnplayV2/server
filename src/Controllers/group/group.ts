@@ -1,7 +1,6 @@
-import { member_type, Prisma, PrismaClient } from '@prisma/client';
+import { member_type, PrismaClient } from '@prisma/client';
 import type { Request, Response } from 'express';
 import { RequestError } from 'request-error';
-import Participation from '../../class/participation';
 import Model, { ISearchGroup } from '../../Models/groups';
 import type { RequestUser } from '../../Types/user';
 import {BasicError} from '../../Utils/basicError';
@@ -94,10 +93,7 @@ class GroupController {
     async show(req: Request, res: Response) {
         const { id } = req.params;
         const {userLoggedIn} = req as RequestUser;
-        
         try {
-
-            
             const data = await model.groups.findUnique({
                 where: {
                     uuid: id,
@@ -117,7 +113,6 @@ class GroupController {
                   }  
                 },
             });
-
 
             if(!data) throw BasicError('Esse grupo não existe ou foi excluído.', 404);
             
