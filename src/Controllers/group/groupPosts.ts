@@ -26,11 +26,11 @@ class GroupPostsController {
             const [totalItems, data] = await Promise.all([
                 model.group_posts.count({
                     where: {
-                        id: id.toString()
+                        groupId: id.toString()
                     }
                 }),
                 model.group_posts.findMany({
-                    skip: (params.perPage * (page - 1)),
+                    skip: (perPage * (page - 1)),
                     take: perPage,
                     where: {
                         groupId: id.toString(),
@@ -50,6 +50,8 @@ class GroupPostsController {
                     },
                 })
             ]);
+
+            console.log(totalItems)
 
             if(data.length == 0) throw BasicError('Nenhuma postagem foi encontrada.', 404);
 
